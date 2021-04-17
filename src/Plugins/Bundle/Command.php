@@ -11,7 +11,7 @@ class Command extends BaseCommand
 {
     protected function configure()
     {
-        $this->setName('bundle');
+        $this->setName("bundle");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

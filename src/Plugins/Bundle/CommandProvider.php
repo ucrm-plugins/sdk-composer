@@ -4,12 +4,13 @@ declare( strict_types=1 );
 namespace UCRM\Composer\Plugins\Bundle;
 
 use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
-use Symfony\Component\Console\Command\Command;
 
 class CommandProvider implements CommandProviderCapability
 {
-    public function getCommands()
+    public function getCommands(): array
     {
-        return array(new Command);
+        return [
+            new Command
+        ];
     }
 }
