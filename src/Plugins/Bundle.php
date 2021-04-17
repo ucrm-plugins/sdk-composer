@@ -16,7 +16,7 @@ class Bundle implements PluginInterface, Capable
     public function getCapabilities()
     {
         return array(
-            'Composer\Plugin\Capability\CommandProvider' => 'UCRM\Composer\Plugins\Bundle\CommandProvider',
+            'Composer\Plugin\Capability\CommandProvider' => 'UCRM\Composer\Plugins\Bundle',
         );
     }
 
