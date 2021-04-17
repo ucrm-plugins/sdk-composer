@@ -1,0 +1,37 @@
+{
+    "name": "ucrm-plugins/sdk-composer",
+    "keywords": [ "ucrm", "unms", "uisp", "plugins", "composer" ],
+    "description": "A collection of composer plugins and scripts for UCRM Plugin development.",
+    "homepage": "https://gitlab.com/ucrm-plugins/sdk-composer",
+    "license": "MIT",
+    "type": "composer-plugin",
+    "authors": [
+        {
+            "name": "Ryan Spaeth",
+            "email": "rspaeth@mvqn.net"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": "^7.3.27",
+        "ext-json": "*",
+        "composer/composer": "^2.0",
+        "composer-plugin-api": "^2.0"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "UCRM\\Composer\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+        }
+    },
+    "extra": {
+        "class": [
+            "UCRM\\Composer\\Plugins\\Bundle"
+        ]
+    }
+}
