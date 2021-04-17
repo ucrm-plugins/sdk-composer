@@ -53,7 +53,7 @@ if( !defined( "__PROJECT_NAME__" ) )
 #region PLUGIN
 
 if( !defined( "__PLUGIN_DIR__" ) )
-    define( "__PLUGIN_DIR__", __PROJECT_DIR__ );
+    define( "__PLUGIN_DIR__", realpath( __PROJECT_DIR__ . ( __DEPLOYMENT__ === DEPLOYMENT::REMOTE ? "" : "/src" ) ) );
 
 if( !defined( "__PLUGIN_NAME__" ) )
     define( "__PLUGIN_NAME__", file_exists( __PLUGIN_DIR__ . "/manifest.json" )
