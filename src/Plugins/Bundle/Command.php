@@ -7,23 +7,197 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
+use Symfony\Component\Filesystem\Filesystem;
 
 class Command extends BaseCommand
 {
+    /** @var bool */
+    protected $dev = true;
+
+
     protected function configure()
     {
         $this->setName("bundle");
         //$this->addOption("optimize", "o", InputOption::VALUE_NONE, "Optimize?");
-        $this->addOption("dev", null, InputOption::VALUE_NONE, "Bundle with development dependencies.");
+        //$this->addOption("dev", null, InputOption::VALUE_NONE, "Bundle with development dependencies.");
+        $this->addOption("no-dev", null, InputOption::VALUE_NONE, "Bundle without development dependencies.");
+        $this->addOption("file", null, InputOption::VALUE_REQUIRED, "Bundle using file name.", null);
+        $this->addOption("suffix", null, InputOption::VALUE_REQUIRED, "Bundle using file suffix.", null);
+        $this->addOption("dir", null, InputOption::VALUE_REQUIRED, "Bundle file location.", null);
+
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $test = $this->getComposer()->getConfig()->get("archive-format");
-        var_dump($test);
+        chdir(__PROJECT_DIR__);
 
-        $output->writeln('Executing');
-        var_dump($input->getOption("dev"));
+        if( ( $manifest = file_get_contents( __PLUGIN_DIR__ . "/manifest.json" ) ) === FALSE )
+        {
+            $output->writeln("<error>The path: '".__PLUGIN_DIR__."' does not adhere to the minimum plugin structure, '"
+                . "exiting!</error>");
+            exit;
+        }
+
+        // TODO: More validation!
+
+        $manifest = json_decode($manifest, true);
+
+        #region OPTIONS
+
+        $format = $this->getComposer()->getConfig()->get("archive-format");
+
+        if( !$format || $format !== "zip" )
+        {
+            $output->writeln("<warning>Forcing archive format to 'zip'</warning>");
+            $format = "zip";
+        }
+
+        $noDev = !( $input->getOption( "no-dev" ) === FALSE )
+            || ( !$this->getComposer()->getPackage()->getExtra()["bundle"]["dev"] ?? TRUE );
+
+        $file = $input->getOption("file")
+            ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["file"]
+            ?? __PLUGIN_NAME__;
+
+        $suffix = $input->getOption("suffix")
+            ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["suffix"]
+            ?? "";
+
+        if( strpos( $suffix, "{" ) !== false || strpos( $suffix, "}" ) !== false )
+        {
+            // PLUGIN_VERSION
+            switch( $suffix )
+            {
+                case "{PLUGIN_VERSION}":
+                    $suffix = $manifest["information"]["version"];
+                    break;
+                // TODO: Add other suffix variables, as needed!
+                default;
+                    break;
+            }
+        }
+
+        $dir = $input->getOption("dir")
+            ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["dir"]
+            ?? __PROJECT_DIR__ . "/zip/";
+
+        $abs = $this->pathIsAbsolute($dir) ? $dir : getcwd() . "/$dir";
+
+        if( !realpath($abs) )
+            mkdir( $dir, 0777, TRUE );
+
+        $path = realpath( $abs );
+        $name = $file . ($suffix ? "-$suffix": "");
+
+        $output->writeln("<info>Archive: '$path".DIRECTORY_SEPARATOR."$name.$format'</info>");
+
+        #endregion
+
+        $fs = new Filesystem();
+
+        $fs->remove("src/composer.json");
+        $fs->remove("src/composer.lock");
+
+        $fs->copy("composer.json", "src/composer.json");
+        $fs->copy("composer.lock", "src/composer.lock");
+
+        //self::delDevScripts();
+        self::fixSubFolders();
+
+        if( $noDev )
+        {
+            $output->writeln( "<info>Creating 'vendor' backup...</info>" );
+            $fs->remove( "src/vendor_bak" );
+            $fs->mirror( "src/vendor", "src/vendor_bak" );
+
+            $output->writeln( "<info>Updating production dependencies...</info>" );
+            echo exec( "cd src && composer update --no-interaction --no-dev --ansi" );
+        }
+        else
+        {
+            $output->writeln( "<info>Updating development dependencies...</info>" );
+            echo exec( "cd src && composer update --no-interaction --ansi" );
+        }
+
+        echo "\n";
+
+        $output->writeln( "<info>Creating archive '$name'...</info>" );
+        echo exec( "cd src && composer archive --file $name --dir $dir --ansi" );
+        echo "\n";
+
+        if( $noDev )
+        {
+            $output->writeln( "<info>Restoring 'vendor' backup...</info>" );
+            $fs->remove( "src/vendor" );
+            $fs->rename( "src/vendor_bak", "src/vendor" );
+            //$this->_deleteDir("vendor");
+            //$this->_rename("vendor_bak", "vendor");
+
+            $output->writeln( "<info>Restoring autoload class-maps...</info>" );
+            echo exec( "cd src && composer dump-autoload --no-interaction --ansi" );
+            echo "\n";
+            //$this->_exec("composer dump-autoload --no-interaction");
+
+            //$this->taskComposerDumpAutoload()
+            //    ->noInteraction()
+            //    ->run();
+        }
+
+        //echo exec("composer update --no-interaction --no-dev --ansi");
+
+        $fs->remove("src/composer.json");
+        $fs->remove("src/composer.lock");
+
+
+
+
+
 
     }
+
+
+
+    protected function pathIsAbsolute( $path )
+    {
+        // Windows
+        if( preg_match( '#^[a-zA-Z]:\\\\#', $path ) )
+            return true;
+
+        //if( strpos( $path, "/" ) === 0 )
+        //    return true;
+
+        return strpos( $path, "/" ) === 0;
+
+        //if( strpos( $path, "./" ) === 0 || strpos( $path, "../" ) === 0 )
+        //    return false;
+
+
+    }
+
+    private static function fixSubFolders( string $path = __PROJECT_DIR__ . "/src/composer.json" )
+    {
+        $folders = [];
+
+        foreach( scandir( __PROJECT_DIR__ ) as $file )
+            if( $file !== "." && $file !== ".." && is_dir($file) && $file !== "src" )
+                $folders[] = $file;
+
+        $contents = file_get_contents( $path );
+
+        $contents = preg_replace( '#("(?:./)?src/?)#m', '"', $contents );
+
+
+        //$contents = preg_replace( '#("archive-format" *: *)("zip")#m', '${1}"ZIP"', $contents );
+
+        foreach( $folders as $folder )
+            $contents = preg_replace( '#("(?:./)?'.$folder.'/?)#m', '"../'.$folder.'/', $contents );
+
+        //$contents = preg_replace( '#("archive-format" *: *)("ZIP")#m', '${1}"zip"', $contents );
+
+        file_put_contents( $path, $contents );
+    }
+
+
+
+
 }

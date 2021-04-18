@@ -10,6 +10,7 @@ use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
 use Composer\Plugin\PluginInterface;
 use Composer\Plugin\Capable;
 use Composer\Script\Event;
+use Symfony\Component\Filesystem\Filesystem;
 use UCRM\Composer\Plugins\Bundle\CommandProvider;
 
 
@@ -33,22 +34,6 @@ class Bundle implements PluginInterface, Capable, EventSubscriberInterface
         /** @noinspection PhpIncludeInspection */
         require_once realpath( __DIR__ . "/../../defines.php" );
 
-        /*
-        $autoload = $this->composer->getPackage()->getAutoload();
-        foreach( $autoload["files"] ?? [] as $file )
-            /** @noinspection PhpIncludeInspection
-            require_once realpath( getcwd() . "/$file" );
-
-        // Define defaults for things we use here...
-
-        if( !defined( "__PROJECT_DIR__" ) )
-            define( "__PROJECT_DIR__", getcwd() );
-
-        if( !defined( "__PLUGIN_DIR__" ) )
-            define( "__PLUGIN_DIR__", realpath( __PROJECT_DIR__ . "/src" ) );
-        */
-
-
     }
 
     public function deactivate( Composer $composer, IOInterface $io )
@@ -61,34 +46,83 @@ class Bundle implements PluginInterface, Capable, EventSubscriberInterface
         // TODO: Implement uninstall() method.
     }
 
+    private function fixSubFolders( string $path = __PROJECT_DIR__ . "/src/composer.json" )
+    {
+        $folders = [];
+
+        foreach( scandir( __PROJECT_DIR__ ) as $file )
+            if( $file !== "." && $file !== ".." && is_dir($file) && $file !== "src" )
+                $folders[] = $file;
+
+        $contents = file_get_contents( $path );
+
+        $contents = preg_replace( '#("(?:./)?src/?)#m', '"', $contents );
+
+
+        //$contents = preg_replace( '#("archive-format" *: *)("zip")#m', '${1}"ZIP"', $contents );
+
+        foreach( $folders as $folder )
+            $contents = preg_replace( '#("(?:./)?'.$folder.'/?)#m', '"../'.$folder.'/', $contents );
+
+        //$contents = preg_replace( '#("archive-format" *: *)("ZIP")#m', '${1}"zip"', $contents );
+
+        file_put_contents( $path, $contents );
+    }
+
 
     public function preArchiveCommand(Event $event)
     {
-
-        var_dump( __DEPLOYMENT__, __PROJECT_DIR__, __PLUGIN_DIR__ );
-
-
-        exit;
-
         $this->io->write("<info>Forcing archive format to 'zip'</info>");
-
         $config = $this->composer->getConfig();
         $config->merge( [ "config" => [ "archive-format" => "zip" ] ] );
-        var_dump($config->get("archive-format"));
+
+        chdir(__PROJECT_DIR__);
+
+        if( ( $manifest = file_get_contents( __PLUGIN_DIR__ . "/manifest.json" ) ) === FALSE )
+            return;
+
+        $io = $event->getIO();
+        $io->write( "<info>Valid 'manifest.json' file found!</info>" );
 
 
-        $autoload = $this->composer->getPackage()->getAutoload();
-        var_dump($autoload);
+        $test = $event->getArguments();
 
-        $path = getcwd();
-        var_dump($path);
+        var_dump($test);
 
         exit;
+
+        $manifest = json_decode( $manifest, TRUE );
+        $name = $manifest["information"]["name"] ?? __PROJECT_NAME__;
+        $version = $manifest["information"]["version"] ?? "";
+        $file = ( $name . ( $version ? "-$version" : "" ) );
+
+        $fs = new Filesystem();
+
+        $fs->remove("src/composer.json");
+        $fs->remove("src/composer.lock");
+
+        $fs->copy("composer.json", "src/composer.json");
+        $fs->copy("composer.lock", "src/composer.lock");
+
+        $this->fixSubFolders();
+
+        //var_dump($event->isDevMode());
+        //$this->composer->getAutoloadGenerator()->dump($config)
+        echo exec("cd src && composer dump-autoload --ansi");
+
+        //$this->composer->getAutoloadGenerator()->
     }
 
     public function postArchiveCommand()
     {
-        //echo "POST\n";
+        chdir(__PROJECT_DIR__);
+
+        $fs = new Filesystem();
+
+        $fs->remove("src/composer.json");
+        $fs->remove("src/composer.lock");
+
+        echo exec("composer dump-autoload --ansi");
     }
 
     public function getCapabilities(): array
