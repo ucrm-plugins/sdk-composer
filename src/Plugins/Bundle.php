@@ -138,8 +138,8 @@ class Bundle implements PluginInterface, Capable, EventSubscriberInterface
         // TODO: Implement getSubscribedEvents() method.
         return [
 
-            "pre-archive-cmd"   => "preArchiveCommand",
-            "post-archive-cmd"  => "postArchiveCommand",
+            //"pre-archive-cmd"   => "preArchiveCommand",
+            //"post-archive-cmd"  => "postArchiveCommand",
         ];
 
     }

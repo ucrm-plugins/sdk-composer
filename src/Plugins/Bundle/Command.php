@@ -106,9 +106,9 @@ class Command extends BaseCommand
 
         if( $noDev )
         {
-            $output->writeln( "<info>Creating 'vendor' backup...</info>" );
-            $fs->remove( "src/vendor_bak" );
-            $fs->mirror( "src/vendor", "src/vendor_bak" );
+            //$output->writeln( "<info>Creating 'vendor' backup...</info>" );
+            //$fs->remove( "src/vendor_bak" );
+            //$fs->mirror( "src/vendor", "src/vendor_bak" );
 
             $output->writeln( "<info>Updating production dependencies...</info>" );
             echo exec( "cd src && composer update --no-interaction --no-dev --ansi" );
@@ -122,16 +122,15 @@ class Command extends BaseCommand
         echo "\n";
 
         $output->writeln( "<info>Creating archive '$name'...</info>" );
+
         echo exec( "cd src && composer archive --file $name --dir $dir --ansi" );
         echo "\n";
 
         if( $noDev )
         {
-            $output->writeln( "<info>Restoring 'vendor' backup...</info>" );
-            $fs->remove( "src/vendor" );
-            $fs->rename( "src/vendor_bak", "src/vendor" );
-            //$this->_deleteDir("vendor");
-            //$this->_rename("vendor_bak", "vendor");
+            //$output->writeln( "<info>Restoring 'vendor' backup...</info>" );
+            //$fs->remove( "src/vendor" );
+            //$fs->rename( "src/vendor_bak", "src/vendor" );
 
             $output->writeln( "<info>Restoring autoload class-maps...</info>" );
             echo exec( "cd src && composer dump-autoload --no-interaction --ansi" );
@@ -193,6 +192,10 @@ class Command extends BaseCommand
             $contents = preg_replace( '#("(?:./)?'.$folder.'/?)#m', '"../'.$folder.'/', $contents );
 
         //$contents = preg_replace( '#("archive-format" *: *)("ZIP")#m', '${1}"zip"', $contents );
+
+        $contents = preg_replace( '#"../sdk-#m', '"../../sdk-', $contents );
+
+        // ../sdk
 
         file_put_contents( $path, $contents );
     }
