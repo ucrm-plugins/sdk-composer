@@ -123,7 +123,7 @@ class Command extends BaseCommand
 
         $output->writeln( "<info>Creating archive '$name'...</info>" );
 
-        echo exec( "cd src && composer archive --file $name --dir $dir --ansi" );
+        echo exec( "cd src && composer archive --file $name --dir $dir --format=zip --ansi" );
         echo "\n";
 
         if( $noDev )
