@@ -130,8 +130,7 @@ class Command extends BaseCommand
 
                 default;
                     $io->error("An unsupported variable '\{{$matches[2]}\}' was supplied in the 'suffix' option!");
-
-                    break;
+                    exit;
             }
 
             $suffix .= $matches[3];
