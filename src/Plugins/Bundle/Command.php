@@ -12,47 +12,70 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class Command extends BaseCommand
 {
-    /** @var bool */
-    protected $dev = true;
 
-
+    /**
+     * Configures this plugin for use with the composer system.
+     */
     protected function configure()
     {
-        $this->setName("bundle");
-        //$this->addOption("optimize", "o", InputOption::VALUE_NONE, "Optimize?");
-        //$this->addOption("dev", null, InputOption::VALUE_NONE, "Bundle with development dependencies.");
-        $this->addOption("no-dev", null, InputOption::VALUE_NONE, "Bundle without development dependencies.");
-        $this->addOption("file", null, InputOption::VALUE_REQUIRED, "Bundle using file name.", null);
-        $this->addOption("suffix", null, InputOption::VALUE_REQUIRED, "Bundle using file suffix.", null);
-        $this->addOption("dir", null, InputOption::VALUE_REQUIRED, "Bundle file location.", null);
+        $this->setName( "bundle" );
+
+        $this->addOption( "no-dev", null, InputOption::VALUE_NONE,     "Bundle without development dependencies." );
+        $this->addOption( "file",   null, InputOption::VALUE_REQUIRED, "Bundle using file name." );
+        $this->addOption( "suffix", null, InputOption::VALUE_REQUIRED, "Bundle using file suffix." );
+        $this->addOption( "dir",    null, InputOption::VALUE_REQUIRED, "Bundle file location." );
 
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * Handles validation of the project prior to the plugin's execution.
+     *
+     * @param InputInterface  $input    Input from the composer system.
+     * @param OutputInterface $output   Output to the composer system.
+     *
+     * @return bool                     Returns TRUE if the project appears to be valid, otherwise FALSE.
+     */
+    protected function validate(InputInterface $input, OutputInterface $output): bool
     {
-
-        //var_dump( __DEPLOYMENT__ );
-        //exit;
-
         if( __DEPLOYMENT__ === Deployment::REMOTE )
         {
-            $output->writeln( "<error>The 'bundle' command cannot be used on a remotely deployed project.</error>" );
+            $output->writeln(<<<EOF
+                <error>
+                  The 'bundle' command cannot be used on a remotely deployed project.
+                </error>
+                EOF
+            );
             exit;
-
         }
+
+        if( !file_exists( __PLUGIN_DIR__ . "/manifest.json" ) || !file_exists( __PLUGIN_DIR__ . "/main.php" ) )
+        {
+            $output->writeln(
+                "<error>The plugin at: '".__PLUGIN_DIR__."' does not contain the required plugin files.</error>\n" .
+                "See: https://github.com/Ubiquiti-App/UCRM-plugins/blob/master/docs/file-structure.md#required-files " .
+                "for more information."
+            );
+            exit;
+        }
+
+        return true;
+
+    }
+
+    /**
+     * Handles validation of the project prior to the plugin's execution.
+     *
+     * @param InputInterface  $input    Input from the composer system.
+     * @param OutputInterface $output   Output to the composer system.
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        // Perform project validation.
+        $this->validate($input, $output);
+
+        $manifest = json_decode( file_get_contents( __PLUGIN_DIR__ . "/manifest.json" ), true );
 
         chdir(__PROJECT_DIR__);
-
-        if( ( $manifest = file_get_contents( __PLUGIN_DIR__ . "/manifest.json" ) ) === FALSE )
-        {
-            $output->writeln("<error>The path: '".__PLUGIN_DIR__."' does not adhere to the minimum plugin structure, '"
-                . "exiting!</error>");
-            exit;
-        }
-
-        // TODO: More validation!
-
-        $manifest = json_decode($manifest, true);
 
         #region OPTIONS
 
@@ -60,12 +83,12 @@ class Command extends BaseCommand
 
         if( !$format || $format !== "zip" )
         {
-            $output->writeln("<warning>Forcing archive format to 'zip'</warning>");
+            $output->writeln("<warning>Forcing archive format to 'zip', per the UCRM Plugin requirements.</warning>");
             $format = "zip";
         }
 
         $noDev = !( $input->getOption( "no-dev" ) === FALSE )
-            || ( !$this->getComposer()->getPackage()->getExtra()["bundle"]["dev"] ?? TRUE );
+            || ( !$this->getComposer()->getPackage()->getExtra()["bundle"]["dev"] ?? FALSE );
 
         $file = $input->getOption("file")
             ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["file"]
