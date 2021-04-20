@@ -42,7 +42,7 @@ class Command extends BaseCommand
 
         if( __DEPLOYMENT__ === Deployment::REMOTE )
         {
-            $io->caution("TEST");
+            $io->warning("TEST");
 
             $output->writeln(<<<EOF
                 <error>
