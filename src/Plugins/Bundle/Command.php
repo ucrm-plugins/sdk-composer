@@ -225,7 +225,7 @@ class Command extends BaseCommand
 
     }
 
-    private static function fixSubFolders( string $path = __PROJECT_DIR__ . "/src/composer.json" )
+    private static function fixSubFolders( array &$vars = [], string $path = __PROJECT_DIR__ . "/src/composer.json" )
     {
         $folders = [];
 
@@ -241,7 +241,14 @@ class Command extends BaseCommand
         //$contents = preg_replace( '#("archive-format" *: *)("zip")#m', '${1}"ZIP"', $contents );
 
         foreach( $folders as $folder )
-            $contents = preg_replace( '#("(?:./)?'.$folder.'/?)#m', '"../'.$folder.'/', $contents );
+        {
+            $contents = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $contents );
+
+            foreach($vars as &$var)
+            {
+                $var = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $var );
+            }
+        }
 
         //$contents = preg_replace( '#("archive-format" *: *)("ZIP")#m', '${1}"zip"', $contents );
 
