@@ -151,8 +151,16 @@ class Command extends BaseCommand
 
         $rows[] = [ "suffix", $suffix, "" ];
 
+        $fixed = self::fixSubFolder($this->getComposer()->getPackage()->getExtra()["bundle"]["dir"]);
+
+        var_dump($fixed);
+        exit;
+
+        //if( $possible )
+        //    $possible =
+
         $dir = $input->getOption("dir")
-            ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["dir"]
+            ?? $unfixed
             ?? __PROJECT_DIR__ . "/zip/";
 
         var_dump($dir);
@@ -271,6 +279,52 @@ class Command extends BaseCommand
 
         file_put_contents( $path, $contents );
 
+        //return $returns;
+    }
+
+    private static function fixSubFolder( string $folder ): string
+    {
+        $folders = [];
+
+        foreach( scandir( __PROJECT_DIR__ ) as $file )
+            if( $file !== "." && $file !== ".." && is_dir($file) && $file !== "src" )
+                $folders[] = $file;
+
+        $contents = $folder;
+
+        $contents = preg_replace( '#("(?:./)?src/?)#m', '"', $contents );
+
+
+        //$contents = preg_replace( '#("archive-format" *: *)("zip")#m', '${1}"ZIP"', $contents );
+
+        //$returns = [];
+
+        foreach( $folders as $folder )
+        {
+            $contents = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $contents );
+
+            /*
+            foreach($vars as $var)
+            {
+
+
+                if( ( $rep = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $var ) ) !== false )
+                {
+                    var_dump($rep);
+                    $returns[] = $rep;
+                }
+            }
+            */
+        }
+
+        //$contents = preg_replace( '#("archive-format" *: *)("ZIP")#m', '${1}"zip"', $contents );
+
+        $contents = preg_replace( '#"../sdk-#m', '"../../sdk-', $contents );
+
+        // ../sdk
+
+        //file_put_contents( $path, $contents );
+        return $contents;
         //return $returns;
     }
 
