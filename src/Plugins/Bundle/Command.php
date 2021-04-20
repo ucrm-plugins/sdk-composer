@@ -110,7 +110,7 @@ class Command extends BaseCommand
         }
 
         $noDev = !( $input->getOption( "no-dev" ) === FALSE )
-            || ( !$this->getComposer()->getPackage()->getExtra()["bundle"]["no-dev"] ?? FALSE );
+            || ( $this->getComposer()->getPackage()->getExtra()["bundle"]["no-dev"] ?? FALSE );
 
         $rows[] = [ "no-dev", ( $noDev ? "true" : "false" ),
             "Bundled ". ( $noDev ? "without" : "with" ) . " development dependencies." ];
