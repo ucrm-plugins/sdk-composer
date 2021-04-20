@@ -118,22 +118,26 @@ class Command extends BaseCommand
         //if( strpos( $suffix, "{" ) !== false && strpos( $suffix, "}" ) !== false )
         if( preg_match('#([A-Za-z0-9._-]*)({[A-Z_]+})([A-Za-z0-9._-]*)#m', $suffix, $matches) !== false )
         {
-            var_dump($matches);
-            exit;
+            $suffix = $matches[1];
 
-
-            switch( $suffix )
+            switch( $matches[2] )
             {
                 case "{PLUGIN_VERSION}":
-                    $suffix = $manifest["information"]["version"];
+                    $suffix .= $manifest["information"]["version"];
                     break;
 
                 // TODO: Add other suffix variables, as needed!
 
                 default;
+                    $io->error("An unsupported variable '\{{$matches[2]}\}' was supplied in the 'suffix' option!");
+
                     break;
             }
+
+            $suffix .= $matches[3];
         }
+
+
 
         exit;
 
