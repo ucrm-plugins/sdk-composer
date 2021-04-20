@@ -80,6 +80,7 @@ class Command extends BaseCommand
         $this->validate($input, $output);
 
         $io = new SymfonyStyle($input, $output);
+        $io->newLine();
 
         chdir(__PROJECT_DIR__);
 
@@ -148,9 +149,7 @@ class Command extends BaseCommand
 
         $rows[] = [ "dir", $path, "" ];
         $io->table($headers, $rows);
-
-
-        $output->writeln("<info>Archive: '$path".DIRECTORY_SEPARATOR."$name.$format'</info>");
+        //$output->writeln("<info>Archive: '$path".DIRECTORY_SEPARATOR."$name.$format'</info>");
 
         #endregion
 
