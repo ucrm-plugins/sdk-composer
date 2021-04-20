@@ -139,10 +139,6 @@ class Command extends BaseCommand
             $suffix .= $matches[3];
         }
 
-        var_dump($suffix);
-
-        exit;
-
         $rows[] = [ "suffix", $suffix, "" ];
 
         $dir = $input->getOption("dir")
@@ -155,7 +151,7 @@ class Command extends BaseCommand
             mkdir( $dir, 0777, TRUE );
 
         $path = realpath( $abs );
-        $name = $file . ($suffix ? "-$suffix": "");
+        $name = $file . ($suffix ?: "");
 
         $rows[] = [ "dir", $path, "" ];
         $io->table($headers, $rows);
