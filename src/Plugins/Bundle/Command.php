@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
 class Command extends BaseCommand
@@ -37,8 +38,12 @@ class Command extends BaseCommand
      */
     protected function validate(InputInterface $input, OutputInterface $output): bool
     {
+        $io = new SymfonyStyle($input, $output);
+
         if( __DEPLOYMENT__ === Deployment::REMOTE )
         {
+            $io->error("TEST");
+
             $output->writeln(<<<EOF
                 <error>
                 
