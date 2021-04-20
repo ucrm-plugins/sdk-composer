@@ -258,7 +258,7 @@ class Command extends BaseCommand
             {
                 if( ( $rep = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $var ) ) !== false )
                 {
-                    var_dump("FOUND!");
+                    var_dump($rep);
                     $returns[] = $rep;
                 }
             }
