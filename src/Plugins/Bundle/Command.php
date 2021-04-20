@@ -155,6 +155,9 @@ class Command extends BaseCommand
             ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["dir"]
             ?? __PROJECT_DIR__ . "/zip/";
 
+        var_dump($dir);
+        exit;
+
         $abs = $this->pathIsAbsolute($dir) ? $dir : getcwd() . "/$dir";
 
         if( !realpath($abs) )
