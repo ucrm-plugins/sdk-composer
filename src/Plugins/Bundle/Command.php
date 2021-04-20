@@ -163,37 +163,37 @@ class Command extends BaseCommand
         if( $noDev )
         {
             //$output->writeln( "<info>Creating 'vendor' backup...</info>" );
-            $io->block( "Creating 'vendor' backup...", null, "fg-color=green", "" );
+            $io->block( "Creating 'vendor' backup...", null, "fg=green", "" );
             $fs->remove( "src/vendor_bak" );
             $fs->mirror( "src/vendor", "src/vendor_bak" );
 
             //$output->writeln( "<info>Updating production dependencies...</info>" );
-            $io->block( "Updating production dependencies...", null, "fg-color=green", "" );
+            $io->block( "Updating production dependencies...", null, "fg=green", "" );
             echo exec( "cd src && composer update --no-interaction --no-dev --ansi" );
         }
         else
         {
             //$output->writeln( "<info>Updating development dependencies...</info>" );
-            $io->block( "Updating development dependencies...", null, "fg-color=green", "" );
+            $io->block( "Updating development dependencies...", null, "fg=green", "" );
             echo exec( "cd src && composer update --no-interaction --ansi" );
         }
 
         //$io->newLine();
-        //$io->block( "Creating archive '$name'...", null, "fg-color=green", "" );
+        //$io->block( "Creating archive '$name'...", null, "fg=green", "" );
 
         echo exec( "cd src && composer archive --file=$name --dir=$dir --format=$format --ansi" );
         //echo "\n";
-        $io->newLine();
+        $io->newLine(2);
 
         if( $noDev )
         {
             //$output->writeln( "<info>Restoring 'vendor' backup...</info>" );
-            $io->block( "Restoring 'vendor' backup...", null, "fg-color=green", "" );
+            $io->block( "Restoring 'vendor' backup...", null, "fg=green", "" );
             $fs->remove( "src/vendor" );
             $fs->rename( "src/vendor_bak", "src/vendor" );
 
             //$output->writeln( "<info>Restoring autoload class-maps...</info>" );
-            $io->block( "Restoring autoload class-maps...", null, "fg-color=green", "" );
+            $io->block( "Restoring autoload class-maps...", null, "fg=green", "" );
             echo exec( "cd src && composer dump-autoload --no-interaction --ansi" );
             $io->newLine();
             //echo "\n";
@@ -206,7 +206,7 @@ class Command extends BaseCommand
 
         //echo exec("composer update --no-interaction --no-dev --ansi");
 
-        $io->block( "Cleaning up...", null, "fg-color=green", "" );
+        $io->block( "Cleaning up...", null, "fg=green", "" );
 
         $fs->remove("src/composer.json");
         $fs->remove("src/composer.lock");
