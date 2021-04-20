@@ -151,20 +151,9 @@ class Command extends BaseCommand
 
         $rows[] = [ "suffix", $suffix, "" ];
 
-        $fixed = self::fixSubFolder($this->getComposer()->getPackage()->getExtra()["bundle"]["dir"]);
-
-        var_dump($fixed);
-        exit;
-
-        //if( $possible )
-        //    $possible =
-
         $dir = $input->getOption("dir")
-            ?? $unfixed
+            ?? self::fixSubFolder($this->getComposer()->getPackage()->getExtra()["bundle"]["dir"])
             ?? __PROJECT_DIR__ . "/zip/";
-
-        var_dump($dir);
-        exit;
 
         $abs = $this->pathIsAbsolute($dir) ? $dir : getcwd() . "/$dir";
 
