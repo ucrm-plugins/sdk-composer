@@ -151,7 +151,7 @@ class Command extends BaseCommand
             mkdir( $dir, 0777, TRUE );
 
         $path = realpath( $abs );
-        $name = $file . ($suffix ?: "");
+        $name = $file . ($suffix ? "-$suffix" : "");
 
         $rows[] = [ "dir", $path, "" ];
         $io->table($headers, $rows);
