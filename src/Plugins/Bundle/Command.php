@@ -83,6 +83,16 @@ class Command extends BaseCommand
 
         $manifest = json_decode( file_get_contents( "src/manifest.json" ), true );
 
+        $fs = new Filesystem();
+
+        $fs->remove("src/composer.json");
+        $fs->remove("src/composer.lock");
+
+        $fs->copy("composer.json", "src/composer.json");
+        $fs->copy("composer.lock", "src/composer.lock");
+
+        self::fixSubFolders();
+
         $io = new SymfonyStyle($input, $output);
         $io->newLine();
 
@@ -158,18 +168,12 @@ class Command extends BaseCommand
 
         #endregion
 
-        $fs = new Filesystem();
 
-        $fs->remove("src/composer.json");
-        $fs->remove("src/composer.lock");
 
-        $fs->copy("composer.json", "src/composer.json");
-        $fs->copy("composer.lock", "src/composer.lock");
+        //var_dump("<" . $dir);
 
-        var_dump("<" . $dir);
-
-        $vars = self::fixSubFolders( [ $dir ] );
-        $dir  = $vars[0];
+        //$vars = self::fixSubFolders( [ $dir ] );
+        //$dir  = $vars[0];
 
         var_dump(">" . $dir);
 
@@ -232,9 +236,8 @@ class Command extends BaseCommand
 
     }
 
-    private static function fixSubFolders( array $vars ): array
+    private static function fixSubFolders( string $path = __PROJECT_DIR__ . "/src/composer.json" )
     {
-        $path = __PROJECT_DIR__ . "/src/composer.json";
         $folders = [];
 
         foreach( scandir( __PROJECT_DIR__ ) as $file )
@@ -248,20 +251,24 @@ class Command extends BaseCommand
 
         //$contents = preg_replace( '#("archive-format" *: *)("zip")#m', '${1}"ZIP"', $contents );
 
-        $returns = [];
+        //$returns = [];
 
         foreach( $folders as $folder )
         {
             $contents = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $contents );
 
+            /*
             foreach($vars as $var)
             {
+
+
                 if( ( $rep = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $var ) ) !== false )
                 {
                     var_dump($rep);
                     $returns[] = $rep;
                 }
             }
+            */
         }
 
         //$contents = preg_replace( '#("archive-format" *: *)("ZIP")#m', '${1}"zip"', $contents );
@@ -272,7 +279,7 @@ class Command extends BaseCommand
 
         file_put_contents( $path, $contents );
 
-        return $returns;
+        //return $returns;
     }
 
 
