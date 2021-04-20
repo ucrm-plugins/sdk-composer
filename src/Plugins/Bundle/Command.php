@@ -292,7 +292,7 @@ class Command extends BaseCommand
 
         $contents = $folder;
 
-        $contents = preg_replace( '#("(?:./)?src/?)#m', '"', $contents );
+        $contents = preg_replace( '#((?:./)?src/?)#m', '', $contents );
 
 
         //$contents = preg_replace( '#("archive-format" *: *)("zip")#m', '${1}"ZIP"', $contents );
@@ -301,7 +301,7 @@ class Command extends BaseCommand
 
         foreach( $folders as $folder )
         {
-            $contents = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $contents );
+            $contents = preg_replace( '#((?:./)?' . $folder . '/?)#m', '../' . $folder . '/', $contents );
 
             /*
             foreach($vars as $var)
