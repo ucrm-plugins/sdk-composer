@@ -56,7 +56,6 @@ class Command extends BaseCommand
         }
 
         return true;
-
     }
 
     /**
@@ -70,10 +69,10 @@ class Command extends BaseCommand
         // Perform project validation.
         $this->validate($input, $output);
 
-        $manifest = json_decode( file_get_contents( __PLUGIN_DIR__ . "/manifest.json" ), true );
+        chdir(__PROJECT_DIR__);
 
-        chdir(__PROJECT_DIR__);
-        chdir(__PROJECT_DIR__);
+        $manifest = json_decode( file_get_contents( "manifest.json" ), true );
+
 
         #region OPTIONS
 
