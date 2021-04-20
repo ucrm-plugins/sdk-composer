@@ -129,7 +129,10 @@ class Command extends BaseCommand
                 // TODO: Add other suffix variables, as needed!
 
                 default;
-                    $io->error("An unsupported variable '{$matches[2]}' was supplied in the 'suffix' option!");
+                    $io->error( [
+                        "An unsupported variable '{$matches[2]}' was supplied in the 'suffix' option!",
+                        "Currently supported variables are: PLUGIN_VERSION"
+                    ] );
                     exit;
             }
 
