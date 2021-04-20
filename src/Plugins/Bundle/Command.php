@@ -87,6 +87,8 @@ class Command extends BaseCommand
 
         #region OPTIONS
 
+        $io->title("Bundle Options");
+
         $format = $this->getComposer()->getConfig()->get("archive-format");
 
         if( !$format || $format !== "zip" )
