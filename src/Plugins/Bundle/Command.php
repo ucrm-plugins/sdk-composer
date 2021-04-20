@@ -79,12 +79,12 @@ class Command extends BaseCommand
         // Perform project validation.
         $this->validate($input, $output);
 
-        $io = new SymfonyStyle($input, $output);
-        $io->newLine();
-
         chdir(__PROJECT_DIR__);
 
         $manifest = json_decode( file_get_contents( "src/manifest.json" ), true );
+
+        $io = new SymfonyStyle($input, $output);
+        $io->newLine();
 
         #region OPTIONS
 
@@ -96,7 +96,6 @@ class Command extends BaseCommand
 
         if( !$format || $format !== "zip" )
         {
-            //$io->block( "archive-format: zip (forced, per the UCRM Plugin requirements)", null, "fg=cyan", "- " );
             $rows[] = [ "archive-format", "zip", "Forced, per the UCRM Plugin requirements." ];
             $format = "zip";
         }
@@ -104,7 +103,6 @@ class Command extends BaseCommand
         $noDev = !( $input->getOption( "no-dev" ) === FALSE )
             || ( !$this->getComposer()->getPackage()->getExtra()["bundle"]["dev"] ?? FALSE );
 
-        //$io->block( "no-dev: " . ( $noDev ? "true" : "false" ), null, "fg=cyan", "- " );
         $rows[] = [ "no-dev", ( $noDev ? "true" : "false" ),
             "Bundled ". ( $noDev ? "without" : "with" ) . " development dependencies." ];
 
@@ -112,7 +110,6 @@ class Command extends BaseCommand
             ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["file"]
             ?? __PLUGIN_NAME__;
 
-        //$io->block( "file: " . ( $noDev ? "true" : "false" ), null, "fg=cyan", "- " );
         $rows[] = [ "file", $file, "" ];
 
         $suffix = $input->getOption("suffix")
@@ -149,7 +146,6 @@ class Command extends BaseCommand
 
         $rows[] = [ "dir", $path, "" ];
         $io->table($headers, $rows);
-        //$output->writeln("<info>Archive: '$path".DIRECTORY_SEPARATOR."$name.$format'</info>");
 
         #endregion
 
@@ -167,34 +163,40 @@ class Command extends BaseCommand
         if( $noDev )
         {
             //$output->writeln( "<info>Creating 'vendor' backup...</info>" );
-            //$fs->remove( "src/vendor_bak" );
-            //$fs->mirror( "src/vendor", "src/vendor_bak" );
+            $io->block( "Creating 'vendor' backup...", null, "fg-color=green", "" );
+            $fs->remove( "src/vendor_bak" );
+            $fs->mirror( "src/vendor", "src/vendor_bak" );
 
-            $output->writeln( "<info>Updating production dependencies...</info>" );
+            //$output->writeln( "<info>Updating production dependencies...</info>" );
+            $io->block( "Updating production dependencies...", null, "fg-color=green", "" );
             echo exec( "cd src && composer update --no-interaction --no-dev --ansi" );
         }
         else
         {
-            $output->writeln( "<info>Updating development dependencies...</info>" );
+            //$output->writeln( "<info>Updating development dependencies...</info>" );
+            $io->block( "Updating development dependencies...", null, "fg-color=green", "" );
             echo exec( "cd src && composer update --no-interaction --ansi" );
         }
 
-        echo "\n";
+        //$io->newLine();
+        //$io->block( "Creating archive '$name'...", null, "fg-color=green", "" );
 
-        $output->writeln( "<info>Creating archive '$name'...</info>" );
-
-        echo exec( "cd src && composer archive --file $name --dir $dir --format=zip --ansi" );
-        echo "\n";
+        echo exec( "cd src && composer archive --file=$name --dir=$dir --format=$format --ansi" );
+        //echo "\n";
+        $io->newLine();
 
         if( $noDev )
         {
             //$output->writeln( "<info>Restoring 'vendor' backup...</info>" );
-            //$fs->remove( "src/vendor" );
-            //$fs->rename( "src/vendor_bak", "src/vendor" );
+            $io->block( "Restoring 'vendor' backup...", null, "fg-color=green", "" );
+            $fs->remove( "src/vendor" );
+            $fs->rename( "src/vendor_bak", "src/vendor" );
 
-            $output->writeln( "<info>Restoring autoload class-maps...</info>" );
+            //$output->writeln( "<info>Restoring autoload class-maps...</info>" );
+            $io->block( "Restoring autoload class-maps...", null, "fg-color=green", "" );
             echo exec( "cd src && composer dump-autoload --no-interaction --ansi" );
-            echo "\n";
+            $io->newLine();
+            //echo "\n";
             //$this->_exec("composer dump-autoload --no-interaction");
 
             //$this->taskComposerDumpAutoload()
@@ -204,14 +206,12 @@ class Command extends BaseCommand
 
         //echo exec("composer update --no-interaction --no-dev --ansi");
 
+        $io->block( "Cleaning up...", null, "fg-color=green", "" );
+
         $fs->remove("src/composer.json");
         $fs->remove("src/composer.lock");
 
-
-
-
-
-
+        $io->success("Plugin bundle created successfully at: '$path".DIRECTORY_SEPARATOR."$name.$format'");
     }
 
 
