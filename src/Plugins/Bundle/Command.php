@@ -88,7 +88,6 @@ class Command extends BaseCommand
 
         #region OPTIONS
 
-        //$io->title("Bundle Options");
         $headers = [ "Option", "Value", "Note" ];
         $rows    = [];
 
@@ -116,15 +115,21 @@ class Command extends BaseCommand
             ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["suffix"]
             ?? "";
 
-        if( strpos( $suffix, "{" ) !== false || strpos( $suffix, "}" ) !== false )
+        //if( strpos( $suffix, "{" ) !== false && strpos( $suffix, "}" ) !== false )
+        if( preg_match('#([A-Za-z0-9._-]*)({[A-Z_]+})([A-Za-z0-9._-]*)#', $suffix, $matches) !== false )
         {
-            // PLUGIN_VERSION
+            var_dump($matches);
+            exit;
+
+
             switch( $suffix )
             {
                 case "{PLUGIN_VERSION}":
                     $suffix = $manifest["information"]["version"];
                     break;
+
                 // TODO: Add other suffix variables, as needed!
+
                 default;
                     break;
             }
