@@ -24,7 +24,7 @@ if ( !defined( "__CONTAINER_ID__" ) )
 
 if( !defined( "__DEPLOYMENT__" ) )
 {
-    class DEPLOYMENT
+    class Deployment
     {
         public const REMOTE = "REMOTE";
         public const LOCAL = "LOCAL";

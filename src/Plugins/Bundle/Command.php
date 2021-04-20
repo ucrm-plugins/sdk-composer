@@ -3,6 +3,7 @@ declare( strict_types=1 );
 
 namespace UCRM\Composer\Plugins\Bundle;
 
+use Deployment;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,6 +30,17 @@ class Command extends BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+
+        //var_dump( __DEPLOYMENT__ );
+        //exit;
+
+        if( __DEPLOYMENT__ === Deployment::REMOTE )
+        {
+            $output->writeln( "<error>The 'bundle' command cannot be used on a remotely deployed project.</error>" );
+            exit;
+
+        }
+
         chdir(__PROJECT_DIR__);
 
         if( ( $manifest = file_get_contents( __PLUGIN_DIR__ . "/manifest.json" ) ) === FALSE )
