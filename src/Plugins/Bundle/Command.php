@@ -71,7 +71,7 @@ class Command extends BaseCommand
 
         chdir(__PROJECT_DIR__);
 
-        $manifest = json_decode( file_get_contents( "manifest.json" ), true );
+        $manifest = json_decode( file_get_contents( "src/manifest.json" ), true );
 
 
         #region OPTIONS
