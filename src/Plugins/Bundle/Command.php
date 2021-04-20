@@ -42,25 +42,17 @@ class Command extends BaseCommand
 
         if( __DEPLOYMENT__ === Deployment::REMOTE )
         {
-            $io->warning("TEST");
-
-            $output->writeln(<<<EOF
-                <error>
-                
-                  The 'bundle' command cannot be used on a remotely deployed project.
-                </error>
-                EOF
-            );
+            $io->error( "The 'bundle' command cannot be used on a remotely deployed project." );
             exit;
         }
 
         if( !file_exists( __PLUGIN_DIR__ . "/manifest.json" ) || !file_exists( __PLUGIN_DIR__ . "/main.php" ) )
         {
-            $output->writeln(
-                "<error>The plugin at: '".__PLUGIN_DIR__."' does not contain the required plugin files.</error>\n" .
+            $io->error( [
+                "The plugin at: '".__PLUGIN_DIR__."' does not contain the required plugin files.",
                 "See: https://github.com/Ubiquiti-App/UCRM-plugins/blob/master/docs/file-structure.md#required-files " .
                 "for more information."
-            );
+            ]);
             exit;
         }
 
