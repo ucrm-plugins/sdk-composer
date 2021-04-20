@@ -166,7 +166,12 @@ class Command extends BaseCommand
         $fs->copy("composer.json", "src/composer.json");
         $fs->copy("composer.lock", "src/composer.lock");
 
-        self::fixSubFolders();
+        $vars = self::fixSubFolders( [ $dir ] );
+        $dir  = $vars[0];
+
+        var_dump($dir);
+
+        exit;
 
         if( $noDev )
         {
@@ -225,8 +230,9 @@ class Command extends BaseCommand
 
     }
 
-    private static function fixSubFolders( array &$vars = [], string $path = __PROJECT_DIR__ . "/src/composer.json" )
+    private static function fixSubFolders( array $vars ): array
     {
+        $path = __PROJECT_DIR__ . "/src/composer.json";
         $folders = [];
 
         foreach( scandir( __PROJECT_DIR__ ) as $file )
@@ -240,13 +246,16 @@ class Command extends BaseCommand
 
         //$contents = preg_replace( '#("archive-format" *: *)("zip")#m', '${1}"ZIP"', $contents );
 
+        $returns = [];
+
         foreach( $folders as $folder )
         {
             $contents = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $contents );
 
-            foreach($vars as &$var)
+            foreach($vars as $var)
             {
-                $var = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $var );
+                if( ( $rep = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $var ) ) !== false )
+                    $returns[] = $rep;
             }
         }
 
@@ -257,6 +266,8 @@ class Command extends BaseCommand
         // ../sdk
 
         file_put_contents( $path, $contents );
+
+        return $returns;
     }
 
 
