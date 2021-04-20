@@ -139,7 +139,7 @@ class Command extends BaseCommand
             $suffix .= $matches[3];
         }
 
-
+        var_dump($suffix);
 
         exit;
 
