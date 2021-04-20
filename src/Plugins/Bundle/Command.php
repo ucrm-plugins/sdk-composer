@@ -93,8 +93,6 @@ class Command extends BaseCommand
 
         self::fixSubFolders();
 
-        exit;
-
         $io = new SymfonyStyle($input, $output);
         $io->newLine();
 
@@ -169,17 +167,6 @@ class Command extends BaseCommand
         $io->table($headers, $rows);
 
         #endregion
-
-
-
-        //var_dump("<" . $dir);
-
-        //$vars = self::fixSubFolders( [ $dir ] );
-        //$dir  = $vars[0];
-
-        var_dump(">" . $dir);
-
-        exit;
 
         if( $noDev )
         {
