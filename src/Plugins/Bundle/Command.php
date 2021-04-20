@@ -87,24 +87,32 @@ class Command extends BaseCommand
 
         #region OPTIONS
 
-        $io->title("Bundle Options");
+        //$io->title("Bundle Options");
+        $headers = [ "Option", "Value", "Note" ];
+        $rows    = [];
 
         $format = $this->getComposer()->getConfig()->get("archive-format");
 
         if( !$format || $format !== "zip" )
         {
-            $io->block( "Forcing archive format to 'zip', per the UCRM Plugin requirements.", null, "fg=cyan", "" );
+            //$io->block( "archive-format: zip (forced, per the UCRM Plugin requirements)", null, "fg=cyan", "- " );
+            $rows[] = [ "archive-format", "zip", "Forced, per the UCRM Plugin requirements." ];
             $format = "zip";
         }
 
         $noDev = !( $input->getOption( "no-dev" ) === FALSE )
             || ( !$this->getComposer()->getPackage()->getExtra()["bundle"]["dev"] ?? FALSE );
 
-        $io->note( "Bundling " . ( $noDev ? "without" : "with" ) . " development dependencies." );
+        //$io->block( "no-dev: " . ( $noDev ? "true" : "false" ), null, "fg=cyan", "- " );
+        $rows[] = [ "no-dev", ( $noDev ? "true" : "false" ),
+            "Bundled ". ( $noDev ? "without" : "with" ) . " development dependencies." ];
 
         $file = $input->getOption("file")
             ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["file"]
             ?? __PLUGIN_NAME__;
+
+        //$io->block( "file: " . ( $noDev ? "true" : "false" ), null, "fg=cyan", "- " );
+        $rows[] = [ "file", $file, "" ];
 
         $suffix = $input->getOption("suffix")
             ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["suffix"]
@@ -124,6 +132,8 @@ class Command extends BaseCommand
             }
         }
 
+        $rows[] = [ "suffix", $suffix, "" ];
+
         $dir = $input->getOption("dir")
             ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["dir"]
             ?? __PROJECT_DIR__ . "/zip/";
@@ -135,6 +145,10 @@ class Command extends BaseCommand
 
         $path = realpath( $abs );
         $name = $file . ($suffix ? "-$suffix": "");
+
+        $rows[] = [ "dir", $path, "" ];
+        $io->table($headers, $rows);
+
 
         $output->writeln("<info>Archive: '$path".DIRECTORY_SEPARATOR."$name.$format'</info>");
 
