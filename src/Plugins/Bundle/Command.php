@@ -196,7 +196,7 @@ class Command extends BaseCommand
 
         $io->block( "Restoring autoload class-maps...", null, "fg=green", "" );
         echo exec( "composer dump-autoload --no-interaction --ansi" );
-        $io->newLine();
+        $io->newLine(2);
 
         $io->block( "Cleaning up...", null, "fg=green", "" );
 
