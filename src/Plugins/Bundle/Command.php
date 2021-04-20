@@ -93,6 +93,8 @@ class Command extends BaseCommand
 
         self::fixSubFolders();
 
+        exit;
+
         $io = new SymfonyStyle($input, $output);
         $io->newLine();
 
