@@ -91,7 +91,7 @@ class Command extends BaseCommand
 
         if( !$format || $format !== "zip" )
         {
-            $io->block( "Forcing archive format to 'zip', per the UCRM Plugin requirements.", null, "fg=orange", "" );
+            $io->block( "Forcing archive format to 'zip', per the UCRM Plugin requirements.", null, "fg=cyan", "" );
             $format = "zip";
         }
 
