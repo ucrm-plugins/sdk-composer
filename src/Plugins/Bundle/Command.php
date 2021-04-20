@@ -152,10 +152,11 @@ class Command extends BaseCommand
         $rows[] = [ "suffix", $suffix, "" ];
 
         $dir = $input->getOption("dir")
-            ?? self::fixSubFolder($this->getComposer()->getPackage()->getExtra()["bundle"]["dir"])
+            //?? self::fixSubFolder($this->getComposer()->getPackage()->getExtra()["bundle"]["dir"])
+            ?? self::fixRelativeDir($this->getComposer()->getPackage()->getExtra()["bundle"]["dir"])
             ?? __PROJECT_DIR__ . "/zip/";
 
-        $abs = $this->pathIsAbsolute($dir) ? $dir : getcwd() . "/$dir";
+        $abs = self::pathIsAbsolute($dir) ? $dir : getcwd() . "/$dir";
 
         if( !realpath($abs) )
             mkdir( $dir, 0777, TRUE );
@@ -208,7 +209,7 @@ class Command extends BaseCommand
 
 
 
-    protected function pathIsAbsolute( $path )
+    private static function pathIsAbsolute( $path )
     {
         // Windows
         if( preg_match( '#^[a-zA-Z]:\\\\#', $path ) )
@@ -315,6 +316,19 @@ class Command extends BaseCommand
         //file_put_contents( $path, $contents );
         return $contents;
         //return $returns;
+    }
+
+
+
+    private static function fixRelativeDir( string $folder ): string
+    {
+        if( self::pathIsAbsolute($folder) )
+            return $folder;
+
+        $folder = preg_replace( '#((?:./)?src/?)#m', '', $folder );
+        $folder = preg_replace( '#((?:./)?([A-Za-z0-9._-]+)/?)#m', '../${2}/', $folder );
+
+        return $folder;
     }
 
 
