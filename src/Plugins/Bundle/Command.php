@@ -50,7 +50,7 @@ class Command extends BaseCommand
         {
             $io->error( [
                 "The plugin at: '".__PLUGIN_DIR__."' does not contain the required plugin files.",
-                "See: https://github.com/Ubiquiti-App/UCRM-plugins/blob/master/docs/file-structure.md#required-files " .
+                "See: <href=https://github.com/Ubiquiti-App/UCRM-plugins/blob/master/docs/file-structure.md#required-files>UCRM Plugin Documentation</>" .
                 "for more information."
             ]);
             exit;
