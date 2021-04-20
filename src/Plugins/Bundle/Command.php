@@ -41,6 +41,7 @@ class Command extends BaseCommand
         {
             $output->writeln(<<<EOF
                 <error>
+                
                   The 'bundle' command cannot be used on a remotely deployed project.
                 </error>
                 EOF
