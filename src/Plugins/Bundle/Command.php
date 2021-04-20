@@ -43,7 +43,7 @@ class Command extends BaseCommand
         if( __DEPLOYMENT__ === Deployment::REMOTE )
         {
             $io->error( "The 'bundle' command cannot be used on a remotely deployed project." );
-            exit;
+            //exit;
         }
 
         if( !file_exists( __PLUGIN_DIR__ . "/manifest.json" ) || !file_exists( __PLUGIN_DIR__ . "/main.php" ) )
