@@ -166,10 +166,12 @@ class Command extends BaseCommand
         $fs->copy("composer.json", "src/composer.json");
         $fs->copy("composer.lock", "src/composer.lock");
 
+        var_dump("<" . $dir);
+
         $vars = self::fixSubFolders( [ $dir ] );
         $dir  = $vars[0];
 
-        var_dump($dir);
+        var_dump(">" . $dir);
 
         exit;
 
@@ -255,7 +257,10 @@ class Command extends BaseCommand
             foreach($vars as $var)
             {
                 if( ( $rep = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $var ) ) !== false )
+                {
+                    var_dump("FOUND!");
                     $returns[] = $rep;
+                }
             }
         }
 
