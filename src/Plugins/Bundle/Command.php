@@ -178,7 +178,7 @@ class Command extends BaseCommand
             echo exec( "cd src && composer update --no-interaction --ansi" );
         }
 
-        //$io->newLine();
+        $io->newLine();
         //$io->block( "Creating archive '$name'...", null, "fg=green", "" );
 
         echo exec( "cd src && composer archive --file=$name --dir=$dir --format=$format --ansi" );
