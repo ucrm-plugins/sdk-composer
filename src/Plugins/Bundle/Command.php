@@ -42,7 +42,9 @@ class Command extends BaseCommand
 
         if( __DEPLOYMENT__ === Deployment::REMOTE )
         {
-            $io->error( "The 'bundle' command cannot be used on a remotely deployed project." );
+            $io->error( [
+                "The 'bundle' command cannot be used on a remotely deployed project."
+            ] );
             exit;
         }
 
@@ -51,7 +53,15 @@ class Command extends BaseCommand
             $io->error( [
                 "The plugin at: '".__PLUGIN_DIR__."' does not contain the required plugin files.",
                 "https://github.com/Ubiquiti-App/UCRM-plugins/blob/master/docs/file-structure.md#required-files",
-            ]);
+            ] );
+            exit;
+        }
+
+        if( !file_exists( __PROJECT_DIR__ . "/src" ) || !is_dir( __PROJECT_DIR__ . "/src" ) )
+        {
+            $io->error( [
+                "The UCRM Plugin code is expected to reside at: '" . __PROJECT_DIR__ . DIRECTORY_SEPARATOR . "src'."
+            ] );
             exit;
         }
 
@@ -69,10 +79,11 @@ class Command extends BaseCommand
         // Perform project validation.
         $this->validate($input, $output);
 
+        $io = new SymfonyStyle($input, $output);
+
         chdir(__PROJECT_DIR__);
 
         $manifest = json_decode( file_get_contents( "src/manifest.json" ), true );
-
 
         #region OPTIONS
 
@@ -80,12 +91,14 @@ class Command extends BaseCommand
 
         if( !$format || $format !== "zip" )
         {
-            $output->writeln("<warning>Forcing archive format to 'zip', per the UCRM Plugin requirements.</warning>");
+            $io->info( "Forcing archive format to 'zip', per the UCRM Plugin requirements." );
             $format = "zip";
         }
 
         $noDev = !( $input->getOption( "no-dev" ) === FALSE )
             || ( !$this->getComposer()->getPackage()->getExtra()["bundle"]["dev"] ?? FALSE );
+
+        $io->note( "Bundling " . ( $noDev ? "without" : "with" ) . " development dependencies." );
 
         $file = $input->getOption("file")
             ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["file"]
