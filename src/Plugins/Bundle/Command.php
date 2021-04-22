@@ -3,7 +3,6 @@ declare( strict_types=1 );
 
 namespace UCRM\Composer\Plugins\Bundle;
 
-use Deployment;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,6 +43,8 @@ class Command extends BaseCommand
         chdir(__PROJECT_DIR__);
 
         $manifest = json_decode( file_get_contents( "src/manifest.json" ), true );
+
+
 
         $fs = new Filesystem();
 
@@ -104,7 +105,7 @@ class Command extends BaseCommand
 
                 default;
                     $io->error( [
-                        "An unsupported variable '{$matches[2]}' was supplied in the 'suffix' option!",
+                        "An unsupported variable '$matches[2]' was supplied in the 'suffix' option!",
                         "Currently supported variables are: PLUGIN_VERSION"
                     ] );
                     exit;
@@ -116,8 +117,6 @@ class Command extends BaseCommand
         $rows[] = [ "suffix", $suffix, "" ];
 
         $dir = $input->getOption("dir")
-            //?? self::fixSubFolder($this->getComposer()->getPackage()->getExtra()["bundle"]["dir"])
-            //?? Project::fixRelativeDir($this->getComposer()->getPackage()->getExtra()["bundle"]["dir"])
             ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["dir"]
             ?? __PROJECT_DIR__ . "/zip/";
 
@@ -170,6 +169,7 @@ class Command extends BaseCommand
         $fs->remove("src/composer.lock");
 
         $io->success("Plugin bundle created successfully at: '$path".DIRECTORY_SEPARATOR."$name.$format'");
+
     }
 
 

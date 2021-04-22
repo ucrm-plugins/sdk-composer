@@ -4,6 +4,7 @@ declare( strict_types=1 );
 namespace UCRM\Composer\Plugins\Bundle;
 
 use Deployment;
+use JsonSchema\Validator;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -31,23 +32,54 @@ class Project
             exit;
         }
 
+        if( !file_exists( __PROJECT_DIR__ . "/src" ) || !is_dir( __PROJECT_DIR__ . "/src" ) )
+        {
+            $io->error( [
+                "The Plugin's code is expected to reside at: '" . __PROJECT_DIR__ . DIRECTORY_SEPARATOR . "src'.",
+                "See: https://gitlab.com/ucrm-plugins/skeleton"
+            ] );
+            exit;
+        }
+
         if( !file_exists( __PLUGIN_DIR__ . "/manifest.json" ) || !file_exists( __PLUGIN_DIR__ . "/main.php" ) )
         {
             $io->error( [
-                "The plugin at: '".__PLUGIN_DIR__."' does not contain the required plugin files.",
+                "The Plugin at: '".__PLUGIN_DIR__."' does not contain the required files.",
                 "See: https://github.com/Ubiquiti-App/UCRM-plugins/blob/master/docs/file-structure.md#required-files",
             ] );
             exit;
         }
 
-        if( !file_exists( __PROJECT_DIR__ . "/src" ) || !is_dir( __PROJECT_DIR__ . "/src" ) )
+        $manifest = json_decode( file_get_contents( __PLUGIN_DIR__ . "/manifest.json" ), true );
+
+        if( ( $error = json_last_error() ) !== JSON_ERROR_NONE )
         {
             $io->error( [
-                "The UCRM Plugin code is expected to reside at: '" . __PROJECT_DIR__ . DIRECTORY_SEPARATOR . "src'.",
-                "See: https://gitlab.com/ucrm-plugins/skeleton"
+                "An error occurred while parsing the Plugin's 'manifest.json' file.",
+                "Error: $error"
             ] );
             exit;
         }
+
+        $validator = new Validator();
+        $validator->validate( $manifest, (object)[
+            '$ref' => "file://" . realpath( __DIR__ . "/../../../manifest.schema.json" )
+        ] );
+
+        if ( !$validator->isValid() )
+        {
+            $errors = [
+                "The Plugin's 'manifest.json' file does not validate against the required schema."
+            ];
+
+            foreach( $validator->getErrors() as $error )
+                $errors[] = sprintf( "[%s] %s\n", $error["property"], $error["message"] );
+
+            $io->error( $errors );
+            exit;
+        }
+
+        // TODO: Add more validation, as needed!
 
         return true;
     }
