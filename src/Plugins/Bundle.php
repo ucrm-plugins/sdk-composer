@@ -76,11 +76,7 @@ final class Bundle implements PluginInterface, Capable, EventSubscriberInterface
 
     public static function getSubscribedEvents(): array
     {
-
-        return [
-            //"pre-archive-cmd"   => "preArchiveCommand",
-            //"post-archive-cmd"  => "postArchiveCommand",
-        ];
+        return [];
 
     }
 

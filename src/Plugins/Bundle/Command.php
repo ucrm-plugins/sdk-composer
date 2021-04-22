@@ -135,9 +135,12 @@ class Command extends BaseCommand
 
         if( $noDev )
         {
+            if( !file_exists( __PROJECT_DIR__ . "/tmp/" ) )
+                mkdir( __PROJECT_DIR__ . "/tmp/", 0777, true );
+
             $io->block( "Creating 'vendor' backup...", null, "fg=green", "" );
-            $fs->remove( "src/vendor_bak" );
-            $fs->mirror( "src/vendor", "src/vendor_bak" );
+            $fs->remove( "tmp/vendor_bak" );
+            $fs->mirror( "src/vendor", "tmp/vendor_bak" );
 
             $io->block( "Updating production dependencies...", null, "fg=green", "" );
             echo exec( "cd src && composer update --no-interaction --no-dev --ansi" );
@@ -156,7 +159,7 @@ class Command extends BaseCommand
         {
             $io->block( "Restoring 'vendor' backup...", null, "fg=green", "" );
             $fs->remove( "src/vendor" );
-            $fs->rename( "src/vendor_bak", "src/vendor" );
+            $fs->rename( "tmp/vendor_bak", "src/vendor" );
         }
 
         $io->block( "Restoring autoload class-maps...", null, "fg=green", "" );
