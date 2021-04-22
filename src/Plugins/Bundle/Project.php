@@ -61,8 +61,6 @@ class Project
             exit;
         }
 
-        //$schema = json_decode(file_get_contents(__DIR__ . "/../../../manifest.schema.json"), true);
-
         $validator = new Validator();
         $validator->validate( $manifest, (object)[
             '$ref' => (object)json_decode( file_get_contents( __DIR__ . "/../../../manifest.schema.json" ), true )
@@ -107,6 +105,7 @@ class Project
      *
      * @return string                   Returns the unmodified absolute path or the modified relative path.
      */
+    /*
     public static function fixRelativeDir( string $path ): string
     {
         if( self::isAbsolutePath($path) )
@@ -136,11 +135,11 @@ class Project
 
 
     }
+    */
 
 
 
-
-    public static function fixSubFolders( string $path = __PROJECT_DIR__ . "/src/composer.json" )
+    public static function fixSubFolders( string $path = __PROJECT_DIR__ . "/src/composer.json" ): void
     {
         $folders = [];
 
@@ -186,6 +185,7 @@ class Project
         //return $returns;
     }
 
+    /*
     public static function fixSubFolder( string $folder ): string
     {
         $folders = [];
@@ -207,7 +207,7 @@ class Project
         {
             $contents = preg_replace( '#((?:./)?' . $folder . '/?)#m', '../' . $folder . '/', $contents );
 
-            /*
+
             foreach($vars as $var)
             {
 
@@ -218,7 +218,7 @@ class Project
                     $returns[] = $rep;
                 }
             }
-            */
+
         }
 
         //$contents = preg_replace( '#("archive-format" *: *)("ZIP")#m', '${1}"zip"', $contents );
@@ -231,7 +231,7 @@ class Project
         return $contents;
         //return $returns;
     }
-
+    */
 
 
 
