@@ -90,7 +90,7 @@ class Command extends BaseCommand
             }
         }
 
-        return $xml->asXML($save ? $path : null);
+        return $save ? $xml->asXML($path) : $xml->asXML();
 
     }
 
