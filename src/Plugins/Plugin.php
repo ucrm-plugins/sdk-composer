@@ -149,7 +149,9 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
     public function getCapabilities(): array
     {
         return array(
-            CommandProviderCapability::class => Plugin\CommandProvider::class
+            CommandProviderCapability::class => Plugin\CommandProvider::class,
+            //"hook": "@php -r \"$hook = $argv[1] ?? die('This is a test');\""
+
         );
     }
 
