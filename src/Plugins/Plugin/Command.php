@@ -7,10 +7,12 @@ namespace UCRM\Composer\Plugins\Plugin;
 use Deployment;
 use Exception;
 use SimpleXMLElement;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
+use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -62,6 +64,7 @@ class Command extends BaseCommand
      * @param OutputInterface $output Output to the composer system.
      *
      * @throws Exception
+     * @noinspection SpellCheckingInspection
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -75,16 +78,19 @@ class Command extends BaseCommand
             exit;
         }
 
+
+
         $regex = self::REGEX_NAME;
 
-        $this->srcRepo = $this->askRegex( $io, "Organization:", "ucrm-plugins",      self::REGEX_REPO );
-        $this->srcName = $this->askRegex( $io, "Plugin Name :", "skeleton",          self::REGEX_NAME );
-        $this->devHost = $this->askRegex( $io, "Remote Host :", "ucrm.dev.mvqn.net", self::REGEX_FQDN, "strtolower" );
-        $this->ideHost = $this->askRegex( $io, "Local Host  :", "localhost",         self::REGEX_FQDN, "strtolower" );
-        $this->idePort = $this->askRegex( $io, "Local Port  :", "4000",              self::REGEX_PORT );
-        $this->sshHost = $this->askRegex( $io, "SSH Host    :", $this->devHost,      self::REGEX_FQDN );
-        $this->sshPort = $this->askRegex( $io, "SSH Port    :", "9022",              self::REGEX_PORT );
-        $this->sshUser = $this->askRegex( $io, "SSH User    :", "nginx",             self::REGEX_USER );
+        $this->srcRepo = $this->askRegex( $input, $output, "Organization", "ucrm-plugins",      self::REGEX_REPO );
+        exit;
+        $this->srcName = $this->askRegex( $io, "Plugin Name ", "skeleton",          self::REGEX_NAME );
+        $this->devHost = $this->askRegex( $io, "Remote Host ", "ucrm.dev.mvqn.net", self::REGEX_FQDN, "strtolower" );
+        $this->ideHost = $this->askRegex( $io, "Local Host  ", "localhost",         self::REGEX_FQDN, "strtolower" );
+        $this->idePort = $this->askRegex( $io, "Local Port  ", "4000",              self::REGEX_PORT );
+        $this->sshHost = $this->askRegex( $io, "SSH Host    ", $this->devHost,      self::REGEX_FQDN );
+        $this->sshPort = $this->askRegex( $io, "SSH Port    ", "9022",              self::REGEX_PORT );
+        $this->sshUser = $this->askRegex( $io, "SSH User    ", "nginx",             self::REGEX_USER );
 
 
         var_dump($this->devHost);
@@ -109,15 +115,19 @@ class Command extends BaseCommand
     }
 
 
-    protected function askRegEx( SymfonyStyle $io, string $question, ?string $default, string $regex,
+    protected function askRegEx( /*SymfonyStyle $io*/ $input, $output, string $question, ?string $default, string $regex,
         callable $func = null ): string
     {
+        $helper = $this->getHelper("question");
+        $quest  = new Question($question, $default);
+
         do
         {
-            $answer = $io->ask( $question, $default );
+
+            $answer = $helper->ask($input, $output, $quest);      //$io->ask( $question, $default );
             $valid = preg_match( $regex, $answer ) === 1;
             if( !$valid )
-                $io->text("Response must be in the format: '$regex'");
+                $output->writeln("Response must be in the format: '$regex'");
         }
         while(!$valid);
 
