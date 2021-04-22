@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class Command extends BaseCommand
+class HookCommand extends BaseCommand
 {
     /**
      * Configures this plugin for use with the composer system.
