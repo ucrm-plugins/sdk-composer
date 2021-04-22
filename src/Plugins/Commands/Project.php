@@ -1,7 +1,7 @@
 <?php
 declare( strict_types=1 );
 
-namespace UCRM\Composer\Plugins\Bundle;
+namespace UCRM\Composer\Plugins\Commands;
 
 use Deployment;
 use JsonSchema\Validator;

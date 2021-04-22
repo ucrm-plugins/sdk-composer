@@ -1,7 +1,7 @@
 <?php
 declare( strict_types=1 );
 
-namespace UCRM\Composer\Plugins\Bundle;
+namespace UCRM\Composer\Plugins\Commands;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -10,7 +10,16 @@ use Composer\Command\BaseCommand;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
-class Command extends BaseCommand
+/**
+ * @copyright 2019 Spaeth Technologies, Inc.
+ * @author    Ryan Spaeth (rspaeth@mvqn.net)
+ *
+ * Class BundleCommand
+ *
+ * @package   UCRM\Composer\Plugins\Commands
+ *
+ */
+class BundleCommand extends BaseCommand
 {
 
     /**

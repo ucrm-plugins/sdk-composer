@@ -31,10 +31,6 @@
         }
     },
     "extra": {
-        "class": [
-            "UCRM\\Composer\\Plugins\\Bundle",
-            "UCRM\\Composer\\Plugins\\Plugin"
-
-        ]
+        "class": "UCRM\\Composer\\Plugins\\Plugin"
     }
 }

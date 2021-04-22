@@ -1,7 +1,7 @@
 <?php
 declare( strict_types=1 );
 
-namespace UCRM\Composer\Plugins\Plugin\Fixers;
+namespace UCRM\Composer\Plugins\Commands\Fixers;
 
 use Exception;
 use SimpleXMLElement;

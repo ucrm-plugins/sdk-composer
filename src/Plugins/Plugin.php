@@ -10,8 +10,7 @@ use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
 use Composer\Plugin\PluginInterface;
 use Composer\Plugin\Capable;
 use Composer\Script\Event;
-use Composer\Util\Filesystem;
-use UCRM\Composer\Plugins\Commands\CommandProvider;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * @copyright 2019 Spaeth Technologies, Inc.
@@ -73,7 +72,7 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
      */
     public function postCreateProjectCommand(Event $event)
     {
-        $fs = new \Symfony\Component\Filesystem\Filesystem();
+        $fs = new Filesystem();
 
         #region .idea/*
 
@@ -149,11 +148,9 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 
     public function getCapabilities(): array
     {
-        return array(
+        return [
             CommandProviderCapability::class => CommandProvider::class,
-            //"hook": "@php -r \"$hook = $argv[1] ?? die('This is a test');\""
-
-        );
+        ];
     }
 
 
