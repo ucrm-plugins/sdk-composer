@@ -6,6 +6,7 @@ namespace UCRM\Composer\Plugins\Plugin;
 
 use Deployment;
 use Exception;
+use http\Exception\RuntimeException;
 use SimpleXMLElement;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -82,8 +83,7 @@ class Command extends BaseCommand
 
         $regex = self::REGEX_NAME;
 
-        $this->srcRepo = $this->askRegex( $input, $output, "Organization", "ucrm-plugins",      self::REGEX_REPO );
-        exit;
+        $this->srcRepo = $this->askRegex( $io, "Organization", "ucrm-plugins",      self::REGEX_REPO );
         $this->srcName = $this->askRegex( $io, "Plugin Name ", "skeleton",          self::REGEX_NAME );
         $this->devHost = $this->askRegex( $io, "Remote Host ", "ucrm.dev.mvqn.net", self::REGEX_FQDN, "strtolower" );
         $this->ideHost = $this->askRegex( $io, "Local Host  ", "localhost",         self::REGEX_FQDN, "strtolower" );
@@ -118,18 +118,26 @@ class Command extends BaseCommand
     protected function askRegEx( SymfonyStyle $io, string $question, ?string $default, string $regex,
         callable $func = null ): string
     {
-        //$helper = $this->getHelper("question");
-        //$quest  = new Question($question, $default);
-
-        do
+        //do
         {
+            $answer = $io->ask( $question, $default,
+                function ($answer) use ($regex)
+                {
+                    if( preg_match( $regex, $answer ) !== 1 )
+                        throw new RuntimeException(
+                            "Response must be in the format: '$regex'"
+                        );
 
-            $answer = $io->ask( $question, $default );
+                    return $answer;
+                }
+            );
+            /*
             $valid = preg_match( $regex, $answer ) === 1;
             if( !$valid )
                 $io->text( "Response must be in the format: '$regex'" );
+            */
         }
-        while(!$valid);
+        //while(!$valid);
 
         return $func ? $func($answer) : $answer;
     }
