@@ -5,6 +5,7 @@ declare( strict_types=1 );
 namespace UCRM\Composer\Plugins\Commands;
 
 use Exception;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
@@ -18,6 +19,8 @@ class HookCommand extends BaseCommand
     protected function configure()
     {
         $this->setName( "hook" );
+
+        $this->addArgument( "hook", InputArgument::REQUIRED, "The hook to execute (install|update|configure|enable|disable|remove)" );
     }
 
 
