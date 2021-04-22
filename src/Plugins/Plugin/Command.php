@@ -123,7 +123,7 @@ class Command extends BaseCommand
                 function ($answer) use ($regex)
                 {
                     if( preg_match( $regex, $answer ) !== 1 )
-                        throw new \Symfony\Component\Console\Exception\RuntimeException(
+                        throw new \RuntimeException(
                             "Response must be in the format: '$regex'"
                         );
 
