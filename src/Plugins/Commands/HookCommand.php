@@ -5,6 +5,7 @@ declare( strict_types=1 );
 namespace UCRM\Composer\Plugins\Commands;
 
 use Exception;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -13,6 +14,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class HookCommand extends BaseCommand
 {
+
+
+
     /**
      * Configures this plugin for use with the composer system.
      */
@@ -34,13 +38,26 @@ class HookCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        //$io = new SymfonyStyle($input, $output);
+        $io = new SymfonyStyle($input, $output);
 
-        $test = $input->getArguments();
+        $hook  = $input->getArgument("hook");
+        $file  = __PLUGIN_DIR__ . "/hook_$hook.php";
+        $hooks = [
+            "install",
+            "update",
+            "configure",
+            "enable",
+            "disable",
+            "remove"
+        ];
 
-        var_dump($test);
+        if( !in_array($hook, $hooks) )
+            throw new RuntimeException("Hook: '$hook' is not supported by UCRM.");
 
+        if( !file_exists( $file ) )
+            throw new RuntimeException("File: '$file' could not be found.");
 
+        include $file;
 
     }
 
