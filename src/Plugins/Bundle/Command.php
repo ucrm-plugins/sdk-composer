@@ -151,7 +151,7 @@ class Command extends BaseCommand
         }
 
         $io->newLine();
-        echo exec( "cd src && composer archive --file=$name --dir=$dir --format=$format --ansi" );
+        echo exec( "cd src && composer archive --file=$name --dir=$path --format=$format --ansi" );
         $io->newLine(2);
 
         if( $noDev )
