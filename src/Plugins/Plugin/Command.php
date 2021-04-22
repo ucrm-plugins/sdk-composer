@@ -13,7 +13,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
-use UCRM\Composer\Plugins\Plugin\Fixers\XmlFixer;
 
 class Command extends BaseCommand
 {
@@ -74,37 +73,45 @@ class Command extends BaseCommand
     protected function fixPhpStorm(InputInterface $input, OutputInterface $output)
     {
 
+        $name   = __PLUGIN_NAME__;
         $remote = "ucrm.dev.mvqn.net";
         $local  = "0.0.0.0";
 
 
 
-        $xml = new XmlFixer( __PROJECT_DIR__ . "/.idea/deployment.xml" );
+
+        #region .idea/deployment.xml
+
+        $xml = new Fixers\XmlFixer( __PROJECT_DIR__ . "/.idea/deployment.xml" );
 
         /** @noinspection SpellCheckingInspection */
         $xml->replace(
             "/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping",
             [
-                "deploy" => "/" . __PLUGIN_NAME__,
-                "web" => "/" . __PLUGIN_NAME__
+                "deploy" => "/$name",
+                "web" => "/$name",
             ]
         );
         //$xml->save();
 
-        $xml = new XmlFixer( __PROJECT_DIR__ . "/.idea/php.xml" );
+        #endregion
+
+        #region .idea/php.xml
+
+        $xml = new Fixers\XmlFixer( __PROJECT_DIR__ . "/.idea/php.xml" );
 
         $xml->replace(
             "/project/component[@name='PhpProjectServersManager']/servers/server[@name='$local']",
             [
                 //"host" => "localhost",
-                //"port" => "4000"
+                //"port" => "4000",
             ]
         );
 
         $xml->replace(
             "/project/component[@name='PhpProjectServersManager']/servers/server[@name='$remote']",
             [
-                "host" => "ucrm.dev"
+                //"host" => "ucrm.dev.mvqn.net",
             ]
         );
 
@@ -112,7 +119,7 @@ class Command extends BaseCommand
             "/project/component[@name='PhpProjectServersManager']/servers/server[@name='$remote']" .
                 "/path_mappings/mapping[@local-root='\$PROJECT_DIR\$/dev/public.php']",
             [
-                "remote-root" => "/usr/src/ucrm/web/_plugins/" . "__PLUGIN_NAME__" . "/public.php"
+                "remote-root" => "/usr/src/ucrm/web/_plugins/$name/public.php",
             ]
         );
 
@@ -120,10 +127,29 @@ class Command extends BaseCommand
             "/project/component[@name='PhpProjectServersManager']/servers/server[@name='$remote']" .
             "/path_mappings/mapping[@local-root='\$PROJECT_DIR\$/src']",
             [
-                "remote-root" => "/data/ucrm/data/plugins/" . "__PLUGIN_NAME__"
+                "remote-root" => "/data/ucrm/data/plugins/$name",
             ]
         );
         //$xml->save();
+
+        #endregion
+
+        #region .idea/sshConfigs.xml
+
+        $xml = new Fixers\XmlFixer( __PROJECT_DIR__ . "/.idea/sshConfigs.xml" );
+
+        $xml->replace(
+            "/project/component[@name='SshConfigs']/configs/sshConfig[@customName='nginx@remote']",
+            [
+                "host" => "$remote",
+                //"port" => 9022,
+            ]
+        );
+        //$xml->save();
+
+
+
+
 
         var_dump($xml);
         exit;
