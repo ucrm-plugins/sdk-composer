@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
+use UCRM\Composer\Plugins\Plugin\Fixers\XmlFixer;
 
 class Command extends BaseCommand
 {
@@ -97,17 +98,26 @@ class Command extends BaseCommand
      */
     protected function fixPhpStorm(InputInterface $input, OutputInterface $output)
     {
+        $xml = new XmlFixer( __PROJECT_DIR__ . "/.idea/deployment.xml" );
 
+        $xml->replace(
+            "/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping",
+            [
+                "deploy" => "/test1",
+                "web" => "/test2"
+            ]
+        );
+
+        var_dump($xml);
+
+
+        exit;
 
         $file = file_get_contents( __PROJECT_DIR__ . "/.idea/deployment.xml" );
 
         //$xml = new SimpleXMLElement($file);
         $xml = $file;
 
-        //var_dump($xml);
-        //$mapping = $xml->xpath( "/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping" )[0];
-        //$mapping["deploy"] = "/" . __PLUGIN_NAME__;
-        //$mapping["web"]    = "/" . __PLUGIN_NAME__;
 
         $test = $this->xmlReplace(
             //__PROJECT_DIR__ . "/.idea/deployment.xml",
