@@ -48,6 +48,7 @@ class Bundle implements PluginInterface, Capable, EventSubscriberInterface
 
     private function fixSubFolders( string $path = __PROJECT_DIR__ . "/src/composer.json" )
     {
+        /*
         $folders = [];
 
         foreach( scandir( __PROJECT_DIR__ ) as $file )
@@ -67,11 +68,13 @@ class Bundle implements PluginInterface, Capable, EventSubscriberInterface
         //$contents = preg_replace( '#("archive-format" *: *)("ZIP")#m', '${1}"zip"', $contents );
 
         file_put_contents( $path, $contents );
+        */
     }
 
 
     public function preArchiveCommand(Event $event)
     {
+        /*
         $this->io->write("<info>Forcing archive format to 'zip'</info>");
         $config = $this->composer->getConfig();
         $config->merge( [ "config" => [ "archive-format" => "zip" ] ] );
@@ -111,10 +114,12 @@ class Bundle implements PluginInterface, Capable, EventSubscriberInterface
         echo exec("cd src && composer dump-autoload --ansi");
 
         //$this->composer->getAutoloadGenerator()->
+        */
     }
 
     public function postArchiveCommand()
     {
+        /*
         chdir(__PROJECT_DIR__);
 
         $fs = new Filesystem();
@@ -123,6 +128,7 @@ class Bundle implements PluginInterface, Capable, EventSubscriberInterface
         $fs->remove("src/composer.lock");
 
         echo exec("composer dump-autoload --ansi");
+        */
     }
 
     public function getCapabilities(): array
