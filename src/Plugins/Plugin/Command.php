@@ -6,15 +6,12 @@ namespace UCRM\Composer\Plugins\Plugin;
 
 use Deployment;
 use Exception;
-use SimpleXMLElement;
-use Symfony\Component\Console\Helper\QuestionHelper;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Filesystem\Filesystem;
 
 class Command extends BaseCommand
 {
@@ -117,34 +114,22 @@ class Command extends BaseCommand
     protected function askRegEx( SymfonyStyle $io, string $question, ?string $default, string $regex,
         callable $func = null ): string
     {
-        //do
-        {
-            $answer = $io->ask( $question, $default,
-                function ($answer) use ($regex)
-                {
-                    if( preg_match( $regex, $answer ) !== 1 )
-                        throw new \RuntimeException(
-                            "Response must be in the format: '$regex'"
-                        );
+        $answer = $io->ask( $question, $default,
+            function ($answer) use ($regex)
+            {
+                if( preg_match( $regex, $answer ) !== 1 )
+                    throw new RuntimeException( "Response must be in the format: '$regex'" );
 
-                    return $answer;
-                }
-            );
-            /*
-            $valid = preg_match( $regex, $answer ) === 1;
-            if( !$valid )
-                $io->text( "Response must be in the format: '$regex'" );
-            */
-        }
-        //while(!$valid);
+                return $answer;
+            }
+        );
 
         return $func ? $func($answer) : $answer;
     }
 
-    public function validateName(string $answer)
-    {
-        return ( preg_match(self::REGEX_NAME, $answer) !== FALSE) ? $answer : FALSE;
-    }
+
+
+
 
 
     protected function fixManifest(InputInterface $input, OutputInterface $output)
