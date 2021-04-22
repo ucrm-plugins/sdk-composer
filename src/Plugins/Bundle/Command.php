@@ -90,9 +90,6 @@ class Command extends BaseCommand
         //if( strpos( $suffix, "{" ) !== false && strpos( $suffix, "}" ) !== false )
         if( preg_match('#([A-Za-z0-9._-]*)({[A-Z_]+})?([A-Za-z0-9._-]*)#m', $suffix, $matches) !== false )
         {
-            var_dump($matches);
-            exit;
-
             $suffix = $matches[1];
 
             switch( $matches[2] )
