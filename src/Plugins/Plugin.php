@@ -20,7 +20,7 @@ use Composer\Script\Event;
  * @package   UCRM\Composer\Plugins
  * @final
  */
-final class Bundle implements PluginInterface, Capable, EventSubscriberInterface
+final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 {
     /** @var Composer */
     protected $composer;
@@ -66,6 +66,14 @@ final class Bundle implements PluginInterface, Capable, EventSubscriberInterface
         // TODO: Implement uninstall() method.
     }
 
+    /**
+     *
+     */
+    public function postCreateProjectCommand(Event $event)
+    {
+        var_dump("*** Created Plugin! ***");
+    }
+
     public function getCapabilities(): array
     {
         return array(
@@ -78,8 +86,7 @@ final class Bundle implements PluginInterface, Capable, EventSubscriberInterface
     {
 
         return [
-            //"pre-archive-cmd"   => "preArchiveCommand",
-            //"post-archive-cmd"  => "postArchiveCommand",
+            "post-create-project-cmd" => "postCreateProjectCommand",
         ];
 
     }
