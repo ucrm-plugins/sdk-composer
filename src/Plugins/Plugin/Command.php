@@ -101,7 +101,7 @@ class Command extends BaseCommand
         $xml = new SimpleXMLElement($file);
 
         //var_dump($xml);
-        $test = $xml->xpath('/project/component/serverData/paths[@name="remote"]/serverdata/mappings');
+        $test = $xml->xpath("/project/component/serverData/paths[@name='remote']/serverdata/mappings");
         var_dump($test);
 
     }
