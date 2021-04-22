@@ -16,8 +16,13 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class Command extends BaseCommand
 {
-    private const REGEX_PORT = "#^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$#";
-    private const REGEX_NAME = "#^[a-z0-9-]+$#";
+    private const REGEX_REPO = "/^[a-z0-9-]+$/";
+    private const REGEX_NAME = "/^[a-z0-9-]+$/";
+    private const REGEX_FQDN = "/^[A-Za-z0-9-.]+$/i";
+    private const REGEX_PORT = "/^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/";
+    private const REGEX_USER = "/^[a-z][-a-z0-9]*$/";
+
+
 
     protected $srcRepo;
     protected $srcName;
@@ -72,23 +77,17 @@ class Command extends BaseCommand
 
         $regex = self::REGEX_NAME;
 
-        $this->srcRepo = $this->askRegex($io, "Organization:", "ucrm-plugins", self::REGEX_NAME );
+        $this->srcRepo = $this->askRegex( $io, "Organization:", "ucrm-plugins",      self::REGEX_REPO );
+        $this->srcName = $this->askRegex( $io, "Plugin Name :", "skeleton",          self::REGEX_NAME );
+        $this->devHost = $this->askRegex( $io, "Remote Host :", "ucrm.dev.mvqn.net", self::REGEX_FQDN, "strtolower" );
+        $this->ideHost = $this->askRegex( $io, "Local Host  :", "localhost",         self::REGEX_FQDN, "strtolower" );
+        $this->idePort = $this->askRegex( $io, "Local Port  :", "4000",              self::REGEX_PORT );
+        $this->sshHost = $this->askRegex( $io, "SSH Host    :", $this->devHost,      self::REGEX_FQDN );
+        $this->sshPort = $this->askRegex( $io, "SSH Port    :", "9022",              self::REGEX_PORT );
+        $this->sshUser = $this->askRegex( $io, "SSH User    :", "nginx",             self::REGEX_USER );
 
 
-        exit;
-
-        $this->srcRepo = $io->ask("Organization:", "ucrm-plugins", [ $this, "validateName" ] );
-        $this->srcName = $io->ask("Plugin Name :", "skeleton",     self::REGEX_NAME);
-
-        $this->devHost = $io->ask("Remote Host :", "ucrm.dev.mvqn.net");
-
-        $this->ideHost = $io->ask("Local Host  :", "localhost");
-        $this->idePort = $io->ask("Local Port  :", "4000", self::REGEX_PORT);
-
-        $this->sshHost = $io->ask("SSH Host    :", $this->devHost);
-        $this->sshPort = $io->ask("SSH Port    :", "9022", self::REGEX_PORT);
-        $this->sshUser = $io->ask("SSH User    :", "nginx");
-
+        var_dump($this->devHost);
 
         exit;
 
@@ -110,7 +109,8 @@ class Command extends BaseCommand
     }
 
 
-    protected function askRegEx(SymfonyStyle $io, string $question, ?string $default, string $regex): string
+    protected function askRegEx( SymfonyStyle $io, string $question, ?string $default, string $regex,
+        callable $func = null ): string
     {
         do
         {
@@ -121,7 +121,7 @@ class Command extends BaseCommand
         }
         while(!$valid);
 
-        return $answer;
+        return $func ? $func($answer) : $answer;
     }
 
     public function validateName(string $answer)
