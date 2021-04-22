@@ -20,7 +20,7 @@ class Command extends BaseCommand
     {
         $this->setName( "plugin" );
 
-        //$this->addOption( "no-dev", null, InputOption::VALUE_NONE,     "Bundle without development dependencies." );
+        $this->addOption( "no-dev", null, InputOption::VALUE_NONE,     "Bundle without development dependencies." );
         //$this->addOption( "file",   null, InputOption::VALUE_REQUIRED, "Bundle using file name." );
         //$this->addOption( "suffix", null, InputOption::VALUE_REQUIRED, "Bundle using file suffix." );
         //$this->addOption( "dir",    null, InputOption::VALUE_REQUIRED, "Bundle file location." );
@@ -37,7 +37,7 @@ class Command extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
+        var_dump( "TEST" );
 
     }
 
