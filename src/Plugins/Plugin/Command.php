@@ -67,34 +67,37 @@ class Command extends BaseCommand
     /**
      *
      *
-     * @param string $file
      * @param string $path
-     * @param mixed  $value
+     * @param string $xpath
+     * @param array  $replaces
      * @param bool   $save
      *
-     * @return bool
+     * @return string|bool
      * @throws Exception
      */
-    protected function xmlReplace( string $path, string $xpath, array $replaces, bool $save = true ): bool
+    protected function xmlReplace( string $path, string $xpath, array $replaces, bool $save = true )
     {
         if( !( $path = realpath($path) ) )
             return FALSE;
 
         $xml  = new SimpleXMLElement( file_get_contents( $path ) );
 
-        $element = $xml->xpath($xpath);
-
-
         foreach( $xml->xpath($xpath) as $element )
-            var_dump($element);
+        {
+            foreach( $replaces as $attribute => $value )
+            {
+                $element[$attribute] = $value;
+            }
+        }
 
-
-
+        return $xml->asXML($save ? $path : null);
 
     }
 
 
-
+    /**
+     * @throws Exception
+     */
     protected function fixPhpStorm(InputInterface $input, OutputInterface $output)
     {
 
@@ -104,12 +107,22 @@ class Command extends BaseCommand
         $xml = new SimpleXMLElement($file);
 
         //var_dump($xml);
-        $mapping = $xml->xpath( "/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping[1]" );
+        $mapping = $xml->xpath( "/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping" )[0];
         $mapping["deploy"] = "/" . __PLUGIN_NAME__;
         $mapping["web"]    = "/" . __PLUGIN_NAME__;
 
+        $test = $this->xmlReplace(
+            __PROJECT_DIR__ . "/.idea/deployment.xml",
+            "/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping",
+            [
+                "deploy" => "/test1",
+                "web" => "/test2"
+            ],
+            false
+        );
 
-        var_dump( $mapping );
+
+        var_dump( $test );
 
     }
 
