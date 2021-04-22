@@ -63,7 +63,8 @@ class Project
 
         $validator = new Validator();
         $validator->validate( $manifest, (object)[
-            '$ref' => "file://" . realpath( __DIR__ . "/../../../manifest.schema.json" )
+            //'$ref' => "file://" . realpath( __DIR__ . "/../../../manifest.schema.json" )
+            '$ref' => "https://gitlab.com/ucrm-plugins/sdk-composer/raw/master/manifest.schema.json"
         ] );
 
         if ( !$validator->isValid() )
