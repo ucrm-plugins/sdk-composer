@@ -72,7 +72,7 @@ class Command extends BaseCommand
 
         $regex = self::REGEX_NAME;
 
-        $this->srcRepo = $io->ask("Organization:", "ucrm-plugins", function(string $answer) use ($regex) { return (preg_match($regex, $answer) !== false ? $answer : ""); });
+        $this->srcRepo = $io->ask("Organization:", "ucrm-plugins", "validateName");
         $this->srcName = $io->ask("Plugin Name :", "skeleton",     self::REGEX_NAME);
 
         $this->devHost = $io->ask("Remote Host :", "ucrm.dev.mvqn.net");
@@ -105,9 +105,9 @@ class Command extends BaseCommand
     }
 
 
-    protected function validator(string $regex): bool
+    protected function validateName(string $answer)
     {
-        //return ( preg_match($regex, )  )
+        return ( preg_match(self::REGEX_NAME, $answer) !== FALSE) ? $answer : FALSE;
     }
 
 
