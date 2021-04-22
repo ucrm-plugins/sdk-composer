@@ -135,11 +135,6 @@ class Command extends BaseCommand
 
         #endregion
 
-
-        exit;
-
-
-
         if( $noDev )
         {
             $io->block( "Creating 'vendor' backup...", null, "fg=green", "" );
