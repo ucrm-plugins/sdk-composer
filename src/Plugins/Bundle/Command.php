@@ -115,7 +115,8 @@ class Command extends BaseCommand
 
         $dir = $input->getOption("dir")
             //?? self::fixSubFolder($this->getComposer()->getPackage()->getExtra()["bundle"]["dir"])
-            ?? Project::fixRelativeDir($this->getComposer()->getPackage()->getExtra()["bundle"]["dir"])
+            //?? Project::fixRelativeDir($this->getComposer()->getPackage()->getExtra()["bundle"]["dir"])
+            ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["dir"]
             ?? __PROJECT_DIR__ . "/zip/";
 
         $abs = Project::isAbsolutePath($dir) ? $dir : getcwd() . "/$dir";
