@@ -72,7 +72,7 @@ class Command extends BaseCommand
 
         $regex = self::REGEX_NAME;
 
-        $this->srcRepo = $io->ask("Organization:", "ucrm-plugins", "validateName");
+        $this->srcRepo = $io->ask("Organization:", "ucrm-plugins", [ $this, "validateName"]);
         $this->srcName = $io->ask("Plugin Name :", "skeleton",     self::REGEX_NAME);
 
         $this->devHost = $io->ask("Remote Host :", "ucrm.dev.mvqn.net");
