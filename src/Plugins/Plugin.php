@@ -136,16 +136,13 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 
         #endregion
 
+        #region .git/
+
         chdir( __PROJECT_DIR__ );
 
         echo exec("git init");
 
-        // Needs updated:
-        // - deployment.xml
-        // - modules.xml
-        // - php.xml
-        // - workspace.xml
-
+        #endregion
 
     }
 
