@@ -6,7 +6,6 @@ namespace UCRM\Composer\Plugins\Plugin;
 
 use Deployment;
 use Exception;
-use http\Exception\RuntimeException;
 use SimpleXMLElement;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
@@ -124,7 +123,7 @@ class Command extends BaseCommand
                 function ($answer) use ($regex)
                 {
                     if( preg_match( $regex, $answer ) !== 1 )
-                        throw new RuntimeException(
+                        throw new \Symfony\Component\Console\Exception\RuntimeException(
                             "Response must be in the format: '$regex'"
                         );
 
