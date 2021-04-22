@@ -75,12 +75,15 @@ class Command extends BaseCommand
      * @return bool
      * @throws Exception
      */
-    protected function xmlReplace( string $file, string $xpath, $value, bool $save = true ): bool
+    protected function xmlReplace( string $path, string $xpath, array $replaces, bool $save = true ): bool
     {
-        if( !( $file = realpath($file) ) )
+        if( !( $path = realpath($path) ) )
             return FALSE;
 
-        $xml  = new SimpleXMLElement( file_get_contents( $file ) );
+        $xml  = new SimpleXMLElement( file_get_contents( $path ) );
+
+        $element = $xml->xpath($xpath);
+
 
         foreach( $xml->xpath($xpath) as $element )
             var_dump($element);
@@ -101,7 +104,7 @@ class Command extends BaseCommand
         $xml = new SimpleXMLElement($file);
 
         //var_dump($xml);
-        $mapping = $xml->xpath( "/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping" )[0];
+        $mapping = $xml->xpath( "/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping[1]" );
         $mapping["deploy"] = "/" . __PLUGIN_NAME__;
         $mapping["web"]    = "/" . __PLUGIN_NAME__;
 
