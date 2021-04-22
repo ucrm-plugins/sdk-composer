@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Filesystem;
 class Command extends BaseCommand
 {
     private const REGEX_PORT = "#^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$#";
-    private const REGEX_NAME = "#[a-z0-9-]+#";
+    private const REGEX_NAME = "#^[a-z0-9-]+$#m";
 
     protected $srcRepo;
     protected $srcName;
