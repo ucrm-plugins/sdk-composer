@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class HookCommand extends BaseCommand
+class Command extends BaseCommand
 {
     /**
      * Configures this plugin for use with the composer system.
@@ -22,7 +22,7 @@ class HookCommand extends BaseCommand
     {
         $this->setName( "hook" );
 
-        //$this->addOption( "name", null, InputOption::VALUE_REQUIRED, "The Plugin's name." );
+        $this->addOption( "name", null, InputOption::VALUE_REQUIRED, "The Plugin's name." );
         //$this->addOption( "host", null, InputOption::VALUE_REQUIRED, "The Plugin's remote host." );
 
         //$this->addOption( "fix-phpstorm", null, InputOption::VALUE_NONE, "Fix the .idea/* files for PhpStorm." );
@@ -45,7 +45,7 @@ class HookCommand extends BaseCommand
     {
         $io = new SymfonyStyle($input, $output);
 
-
+        echo "HOOK\n";
 
 
 

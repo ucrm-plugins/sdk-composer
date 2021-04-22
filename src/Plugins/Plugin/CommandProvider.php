@@ -10,8 +10,7 @@ class CommandProvider implements CommandProviderCapability
     public function getCommands(): array
     {
         return [
-            "plugin" => new Command,
-            "hook" => new \UCRM\Composer\Plugins\Hook\HookCommand
+            new Command,
         ];
     }
 }

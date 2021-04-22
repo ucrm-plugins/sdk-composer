@@ -10,7 +10,7 @@ class CommandProvider implements CommandProviderCapability
     public function getCommands(): array
     {
         return [
-            new Command
+            new Command("hook")
         ];
     }
 }

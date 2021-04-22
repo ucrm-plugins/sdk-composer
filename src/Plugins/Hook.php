@@ -21,7 +21,7 @@ use Composer\Util\Filesystem;
  * @package   UCRM\Composer\Plugins
  * @final
  */
-final class Hook implements PluginInterface, Capable, EventSubscriberInterface
+final class Hook implements PluginInterface, Capable
 {
     /** @var Composer */
     protected $composer;
@@ -73,20 +73,10 @@ final class Hook implements PluginInterface, Capable, EventSubscriberInterface
     {
         return array(
             CommandProviderCapability::class => Hook\CommandProvider::class,
-            //"hook": "@php -r \"$hook = $argv[1] ?? die('This is a test');\""
-
         );
     }
 
 
-    public static function getSubscribedEvents(): array
-    {
-
-        return [
-            //"post-create-project-cmd" => "postCreateProjectCommand",
-        ];
-
-    }
 
 }
 
