@@ -41,7 +41,7 @@ class HookCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
 
         $hook  = $input->getArgument("hook");
-        $file  = __PLUGIN_DIR__ . "/hook_$hook.php";
+        $file  = __PLUGIN_DIR__ . DIRECTORY_SEPARATOR . "hook_$hook.php";
         $hooks = [
             "install",
             "update",
@@ -56,6 +56,8 @@ class HookCommand extends BaseCommand
 
         if( !file_exists( $file ) )
             throw new RuntimeException("File: '$file' could not be found.");
+
+        $io->section("Simulating '$hook' hook...");
 
         include $file;
 
