@@ -115,19 +115,19 @@ class Command extends BaseCommand
     }
 
 
-    protected function askRegEx( /*SymfonyStyle $io*/ $input, $output, string $question, ?string $default, string $regex,
+    protected function askRegEx( SymfonyStyle $io, string $question, ?string $default, string $regex,
         callable $func = null ): string
     {
-        $helper = $this->getHelper("question");
-        $quest  = new Question($question, $default);
+        //$helper = $this->getHelper("question");
+        //$quest  = new Question($question, $default);
 
         do
         {
 
-            $answer = $helper->ask($input, $output, $quest);      //$io->ask( $question, $default );
+            $answer = $io->ask( $question, $default );
             $valid = preg_match( $regex, $answer ) === 1;
             if( !$valid )
-                $output->writeln("Response must be in the format: '$regex'");
+                $io->text( "Response must be in the format: '$regex'" );
         }
         while(!$valid);
 
