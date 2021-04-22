@@ -88,11 +88,9 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 
             $event->getIO()->write( "<info>Updated file: '$file'</info>" . PHP_EOL );
 
-            if( preg_match("/^skeleton(.*)$/", $file, $matches) === 1 )
+            if( preg_match("/^skeleton(.*)$/", $file, $matches) === 1 && count($matches) === 2 )
             {
-                //$new = $matches[0][2]
-                var_dump($matches);
-                $fs->rename( $file, __PROJECT_NAME__ );
+                $fs->rename( $file, __PROJECT_NAME__ . $matches[1] );
                 $event->getIO()->write( "<info>Renamed file: '$file'</info>" . PHP_EOL );
             }
         }
