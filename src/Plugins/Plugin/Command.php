@@ -3,6 +3,8 @@ declare( strict_types=1 );
 
 namespace UCRM\Composer\Plugins\Plugin;
 
+use Deployment;
+use Exception;
 use SimpleXMLElement;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,7 +23,7 @@ class Command extends BaseCommand
     {
         $this->setName( "plugin" );
 
-        $this->addOption( "no-dev", null, InputOption::VALUE_NONE,     "Bundle without development dependencies." );
+        $this->addOption( "fix-phpstorm", null, InputOption::VALUE_NONE, "Fix the .idea/* files for PhpStorm." );
         //$this->addOption( "file",   null, InputOption::VALUE_REQUIRED, "Bundle using file name." );
         //$this->addOption( "suffix", null, InputOption::VALUE_REQUIRED, "Bundle using file suffix." );
         //$this->addOption( "dir",    null, InputOption::VALUE_REQUIRED, "Bundle file location." );
@@ -38,10 +40,50 @@ class Command extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->fixPhpStorm();
+        $io = new SymfonyStyle($input, $output);
+
+        if( __DEPLOYMENT__ === Deployment::REMOTE )
+        {
+            $io->error( [
+                "The 'bundle' command cannot be used on a remotely deployed project."
+            ] );
+            exit;
+        }
 
 
 
+
+
+        if($input->getOption("fix-phpstorm"))
+        {
+            $this->fixPhpStorm($input, $output);
+        }
+
+
+
+
+    }
+
+    /**
+     *
+     *
+     * @param string $file
+     * @param string $path
+     * @param mixed  $value
+     * @param bool   $save
+     *
+     * @return bool
+     * @throws Exception
+     */
+    protected function xmlReplace( string $file, string $xpath, $value, bool $save = true ): bool
+    {
+        if( !( $file = realpath($file) ) )
+            return FALSE;
+
+        $xml  = new SimpleXMLElement( file_get_contents( $file ) );
+
+        foreach( $xml->xpath($xpath) as $element )
+            var_dump($element);
 
 
 
@@ -49,19 +91,10 @@ class Command extends BaseCommand
     }
 
 
-    protected function xmlReplace( string $path)
+
+    protected function fixPhpStorm(InputInterface $input, OutputInterface $output)
     {
-        $file = file_get_contents( $path );
 
-        $xml = new SimpleXMLElement($file);
-
-
-    }
-
-
-
-    protected function fixPhpStorm()
-    {
 
         $file = file_get_contents( __PROJECT_DIR__ . "/.idea/deployment.xml" );
 
