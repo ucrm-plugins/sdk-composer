@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpUnused */
+/** @noinspection PhpUnusedParameterInspection */
 declare( strict_types=1 );
 
 namespace UCRM\Composer\Plugins\Plugin;
@@ -32,12 +33,13 @@ class Command extends BaseCommand
     }
 
 
-
     /**
      * Handles validation of the project prior to the plugin's execution.
      *
-     * @param InputInterface  $input    Input from the composer system.
-     * @param OutputInterface $output   Output to the composer system.
+     * @param InputInterface  $input  Input from the composer system.
+     * @param OutputInterface $output Output to the composer system.
+     *
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -53,8 +55,6 @@ class Command extends BaseCommand
 
 
 
-
-
         if($input->getOption("fix-phpstorm"))
         {
             $this->fixPhpStorm($input, $output);
@@ -65,32 +65,7 @@ class Command extends BaseCommand
 
     }
 
-    /**
-     *
-     *
-     * @param string $path
-     * @param string $xpath
-     * @param array  $replaces
-     * @param bool   $save
-     *
-     * @return string|bool
-     * @throws Exception
-     */
-    protected function xmlReplace( string $xml, string $xpath, array $replaces )
-    {
-        //if( !( $path = realpath($path) ) )
-        //    return FALSE;
 
-        $xml  = new SimpleXMLElement( $xml ); //file_get_contents( $path ) );
-
-        foreach( $xml->xpath($xpath) as $element )
-            foreach( $replaces as $attribute => $value )
-                $element[$attribute] = $value;
-
-        //return $save ? $xml->asXML($path) : $xml->asXML();
-        return $xml->asXML();
-
-    }
 
 
     /**
@@ -98,39 +73,64 @@ class Command extends BaseCommand
      */
     protected function fixPhpStorm(InputInterface $input, OutputInterface $output)
     {
+
+        $remote = "ucrm.dev.mvqn.net";
+        $local  = "0.0.0.0";
+
+
+
         $xml = new XmlFixer( __PROJECT_DIR__ . "/.idea/deployment.xml" );
 
+        /** @noinspection SpellCheckingInspection */
         $xml->replace(
             "/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping",
             [
-                "deploy" => "/test1",
-                "web" => "/test2"
+                "deploy" => "/" . __PLUGIN_NAME__,
+                "web" => "/" . __PLUGIN_NAME__
             ]
         );
+        //$xml->save();
+
+        $xml = new XmlFixer( __PROJECT_DIR__ . "/.idea/php.xml" );
+
+        $xml->replace(
+            "/project/component[@name='PhpProjectServersManager']/servers/server[@name='$local']",
+            [
+                //"host" => "localhost",
+                //"port" => "4000"
+            ]
+        );
+
+        $xml->replace(
+            "/project/component[@name='PhpProjectServersManager']/servers/server[@name='$remote']",
+            [
+                //"host" => "ucrm.dev.mvqn.net"
+            ]
+        );
+
+        $xml->replace(
+            "/project/component[@name='PhpProjectServersManager']/servers/server[@name='$remote']" .
+                "/path_mappings/mapping[@local-root='\$PROJECT_DIR\$/dev/public.php']",
+            [
+                "remote-root" => "/usr/src/ucrm/web/_plugins/" . __PLUGIN_NAME__ . "/public.php"
+            ]
+        );
+
+        $xml->replace(
+            "/project/component[@name='PhpProjectServersManager']/servers/server[@name='$remote']" .
+            "/path_mappings/mapping[@local-root='\$PROJECT_DIR\$/src']",
+            [
+                "remote-root" => "/data/ucrm/data/plugins/" . __PLUGIN_NAME__
+            ]
+        );
+        //$xml->save();
 
         var_dump($xml);
-
-
         exit;
 
-        $file = file_get_contents( __PROJECT_DIR__ . "/.idea/deployment.xml" );
-
-        //$xml = new SimpleXMLElement($file);
-        $xml = $file;
 
 
-        $test = $this->xmlReplace(
-            //__PROJECT_DIR__ . "/.idea/deployment.xml",
-            $xml,
-            "/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping",
-            [
-                "deploy" => "/test1",
-                "web" => "/test2"
-            ]
-        );
 
-
-        var_dump( $test );
 
     }
 
