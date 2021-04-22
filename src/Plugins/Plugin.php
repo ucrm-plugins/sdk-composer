@@ -72,10 +72,11 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
      */
     public function postCreateProjectCommand(Event $event)
     {
-        //var_dump("*** Created Plugin! ***");
-        chdir( __PROJECT_DIR__ . "/.idea/" );
-
         $fs = new \Symfony\Component\Filesystem\Filesystem();
+
+        #region .idea/*
+
+        chdir( __PROJECT_DIR__ . "/.idea/" );
 
         foreach( scandir( getcwd() ) as $file )
         {
@@ -83,18 +84,57 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
                 continue;
 
             $contents = file_get_contents($file);
-            $contents = preg_replace("/skeleton/m", __PROJECT_NAME__, $contents);
-            file_put_contents($file, $contents);
+            $contents = preg_replace( "/skeleton/m", __PROJECT_NAME__, $contents );
+            file_put_contents( $file, $contents );
 
-            $event->getIO()->write( "<info>Updated file: '$file'</info>" . PHP_EOL );
+            $event->getIO()->write( "<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "$file'</info>" );
 
             if( preg_match("/^skeleton(.*)$/", $file, $matches) === 1 && count($matches) === 2 )
             {
                 $fs->rename( $file, __PROJECT_NAME__ . $matches[1] );
-                $event->getIO()->write( "<info>Renamed file: '$file'</info>" . PHP_EOL );
+                $event->getIO()->write( "<info>Renamed file: '" . getcwd() . DIRECTORY_SEPARATOR . "$file'</info>" );
             }
         }
 
+        #endregion
+
+        #region dev/public.php
+
+        chdir( __PROJECT_DIR__ . "/dev/" );
+
+        $contents = file_get_contents( "public.php" );
+        $contents = preg_replace( "/skeleton/m", __PROJECT_NAME__, $contents );
+        file_put_contents( "public.php", $contents );
+
+        $event->getIO()->write( "<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "public.php'</info>" );
+
+        #endregion
+
+        #region src/manifest.json
+
+        chdir( __PROJECT_DIR__ . "/src/" );
+
+        $contents = file_get_contents( "manifest.json" );
+        $contents = preg_replace( "/skeleton/m", __PROJECT_NAME__, $contents );
+        $contents = preg_replace( "/Skeleton/m", ucfirst( __PROJECT_NAME__ ), $contents );
+
+        file_put_contents( "manifest.json", $contents );
+
+        $event->getIO()->write( "<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "manifest.json'</info>" );
+
+        #endregion
+
+        #region composer.json
+
+        chdir( __PROJECT_DIR__ );
+
+        $contents = file_get_contents( "composer.json" );
+        $contents = preg_replace( "/skeleton/m", __PROJECT_NAME__, $contents );
+        file_put_contents( "composer.json", $contents );
+
+        $event->getIO()->write( "<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "composer.json'</info>" );
+
+        #endregion
 
         chdir( __PROJECT_DIR__ );
 
