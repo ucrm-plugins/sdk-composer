@@ -75,22 +75,19 @@ class Command extends BaseCommand
      * @return string|bool
      * @throws Exception
      */
-    protected function xmlReplace( string $path, string $xpath, array $replaces, bool $save = true )
+    protected function xmlReplace( string $xml, string $xpath, array $replaces )
     {
-        if( !( $path = realpath($path) ) )
-            return FALSE;
+        //if( !( $path = realpath($path) ) )
+        //    return FALSE;
 
-        $xml  = new SimpleXMLElement( file_get_contents( $path ) );
+        $xml  = new SimpleXMLElement( $xml ); //file_get_contents( $path ) );
 
         foreach( $xml->xpath($xpath) as $element )
-        {
             foreach( $replaces as $attribute => $value )
-            {
                 $element[$attribute] = $value;
-            }
-        }
 
-        return $save ? $xml->asXML($path) : $xml->asXML();
+        //return $save ? $xml->asXML($path) : $xml->asXML();
+        return $xml->asXML();
 
     }
 
@@ -104,21 +101,22 @@ class Command extends BaseCommand
 
         $file = file_get_contents( __PROJECT_DIR__ . "/.idea/deployment.xml" );
 
-        $xml = new SimpleXMLElement($file);
+        //$xml = new SimpleXMLElement($file);
+        $xml = $file;
 
         //var_dump($xml);
-        $mapping = $xml->xpath( "/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping" )[0];
-        $mapping["deploy"] = "/" . __PLUGIN_NAME__;
-        $mapping["web"]    = "/" . __PLUGIN_NAME__;
+        //$mapping = $xml->xpath( "/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping" )[0];
+        //$mapping["deploy"] = "/" . __PLUGIN_NAME__;
+        //$mapping["web"]    = "/" . __PLUGIN_NAME__;
 
         $test = $this->xmlReplace(
-            __PROJECT_DIR__ . "/.idea/deployment.xml",
+            //__PROJECT_DIR__ . "/.idea/deployment.xml",
+            $xml,
             "/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping",
             [
                 "deploy" => "/test1",
                 "web" => "/test2"
-            ],
-            false
+            ]
         );
 
 
