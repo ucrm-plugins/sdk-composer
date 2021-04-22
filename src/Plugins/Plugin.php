@@ -73,11 +73,11 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
     public function postCreateProjectCommand(Event $event)
     {
         //var_dump("*** Created Plugin! ***");
-        chdir( __PROJECT_DIR__ );
+        chdir( __PROJECT_DIR__ . "/.idea/" );
 
         $fs = new \Symfony\Component\Filesystem\Filesystem();
 
-        foreach( scandir( __PROJECT_DIR__ ) as $file )
+        foreach( scandir( getcwd() ) as $file )
         {
             if( $file === "." || $file === ".." )
                 continue;
@@ -96,7 +96,7 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         }
 
 
-
+        chdir( __PROJECT_DIR__ );
 
         echo exec("git init");
 
