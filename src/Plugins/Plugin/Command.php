@@ -16,6 +16,21 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class Command extends BaseCommand
 {
+    private const REGEX_PORT = "#^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$#";
+    private const REGEX_NAME = "#^([a-z0-9-]+)#";
+
+    protected $srcRepo;
+    protected $srcName;
+
+    protected $devHost;
+
+    protected $ideHost;
+    protected $idePort;
+
+    protected $sshHost;
+    protected $sshPort;
+    protected $sshUser;
+
 
     /**
      * Configures this plugin for use with the composer system.
@@ -23,6 +38,9 @@ class Command extends BaseCommand
     protected function configure()
     {
         $this->setName( "plugin" );
+
+        $this->addOption( "name", null, InputOption::VALUE_REQUIRED, "The Plugin's name." );
+        $this->addOption( "host", null, InputOption::VALUE_REQUIRED, "The Plugin's remote host." );
 
         $this->addOption( "fix-phpstorm", null, InputOption::VALUE_NONE, "Fix the .idea/* files for PhpStorm." );
         //$this->addOption( "file",   null, InputOption::VALUE_REQUIRED, "Bundle using file name." );
@@ -52,7 +70,27 @@ class Command extends BaseCommand
             exit;
         }
 
+        $this->srcRepo = $io->ask("Organization:", "ucrm-plugins", self::REGEX_NAME);
+        $this->srcName = $io->ask("Plugin Name :", "skeleton",     self::REGEX_NAME);
 
+        $this->devHost = $io->ask("Remote Host :", "ucrm.dev.mvqn.net");
+
+        $this->ideHost = $io->ask("Local Host  :", "localhost");
+        $this->idePort = $io->ask("Local Port  :", "4000", self::REGEX_PORT);
+
+        $this->sshHost = $io->ask("SSH Host    :", $this->devHost);
+        $this->sshPort = $io->ask("SSH Port    :", "9022", self::REGEX_PORT);
+        $this->sshUser = $io->ask("SSH User    :", "nginx");
+
+
+        exit;
+
+
+        // Fix composer.json
+
+        // Fix manifest.json
+
+        $this->fixManifest($input, $output);
 
         if($input->getOption("fix-phpstorm"))
         {
@@ -65,6 +103,15 @@ class Command extends BaseCommand
     }
 
 
+    protected function fixManifest(InputInterface $input, OutputInterface $output)
+    {
+
+
+
+
+
+    }
+
 
 
     /**
@@ -73,9 +120,19 @@ class Command extends BaseCommand
     protected function fixPhpStorm(InputInterface $input, OutputInterface $output)
     {
 
-        $name   = __PLUGIN_NAME__;
-        $remote = "ucrm.dev.mvqn.net";
-        $local  = "0.0.0.0";
+        $srcName = __PLUGIN_NAME__;
+
+        $devHost = "ucrm.dev.mvqn.net";
+
+        $ideHost = "localhost";
+        $idePort = "4000";
+
+        $sshHost = $devHost;
+        $sshPort = 9022;
+        $sshUser = "nginx";
+
+
+
 
 
 
@@ -84,14 +141,23 @@ class Command extends BaseCommand
 
         $xml = new Fixers\XmlFixer( __PROJECT_DIR__ . "/.idea/deployment.xml" );
 
-        /** @noinspection SpellCheckingInspection */
         $xml->replace(
-            "/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping",
+            "/project/component[@name='PublishConfigData']",
             [
-                "deploy" => "/$name",
-                "web" => "/$name",
+                "serverName" => "/$devHost",
             ]
         );
+
+        /** @noinspection SpellCheckingInspection */
+        $xml->replace(
+            "/project/component[@name='PublishConfigData']"
+            . "/serverData/paths[@name='$devHost']/serverdata/mappings/mapping",
+            [
+                "deploy" => "/$srcName",
+                "web" => "/$srcName",
+            ]
+        );
+
         //$xml->save();
 
         #endregion
@@ -101,35 +167,40 @@ class Command extends BaseCommand
         $xml = new Fixers\XmlFixer( __PROJECT_DIR__ . "/.idea/php.xml" );
 
         $xml->replace(
-            "/project/component[@name='PhpProjectServersManager']/servers/server[@name='$local']",
+            "/project/component[@name='PhpProjectServersManager']"
+            . "/servers/server[@name='$ideHost']",
             [
-                //"host" => "localhost",
-                //"port" => "4000",
+                "name" => "$ideHost",
+                "host" => "$ideHost",
+                "port" => "$idePort",
             ]
         );
 
         $xml->replace(
-            "/project/component[@name='PhpProjectServersManager']/servers/server[@name='$remote']",
+            "/project/component[@name='PhpProjectServersManager']"
+            . "/servers/server[@name='$devHost']",
             [
-                //"host" => "ucrm.dev.mvqn.net",
+                "name" => "$devHost",
+                "host" => "$devHost",
             ]
         );
 
         $xml->replace(
-            "/project/component[@name='PhpProjectServersManager']/servers/server[@name='$remote']" .
-                "/path_mappings/mapping[@local-root='\$PROJECT_DIR\$/dev/public.php']",
+            "/project/component[@name='PhpProjectServersManager']"
+            . "/servers/server[@name='$devHost']/path_mappings/mapping[@local-root='\$PROJECT_DIR\$/dev/public.php']",
             [
-                "remote-root" => "/usr/src/ucrm/web/_plugins/$name/public.php",
+                "remote-root" => "/usr/src/ucrm/web/_plugins/$srcName/public.php",
             ]
         );
 
         $xml->replace(
-            "/project/component[@name='PhpProjectServersManager']/servers/server[@name='$remote']" .
-            "/path_mappings/mapping[@local-root='\$PROJECT_DIR\$/src']",
+            "/project/component[@name='PhpProjectServersManager']"
+            . "/servers/server[@name='$devHost']/path_mappings/mapping[@local-root='\$PROJECT_DIR\$/src']",
             [
-                "remote-root" => "/data/ucrm/data/plugins/$name",
+                "remote-root" => "/data/ucrm/data/plugins/$srcName",
             ]
         );
+
         //$xml->save();
 
         #endregion
@@ -139,13 +210,44 @@ class Command extends BaseCommand
         $xml = new Fixers\XmlFixer( __PROJECT_DIR__ . "/.idea/sshConfigs.xml" );
 
         $xml->replace(
-            "/project/component[@name='SshConfigs']/configs/sshConfig[@customName='nginx@remote']",
+            "/project/component[@name='SshConfigs']"
+            . "/configs/sshConfig",
             [
-                "host" => "$remote",
-                //"port" => 9022,
+                "host" => "$sshHost",
+                "port" => "$sshPort",
             ]
         );
+
         //$xml->save();
+
+        #endregion
+
+        #region .idea/webServers.xml
+
+        $xml = new Fixers\XmlFixer( __PROJECT_DIR__ . "/.idea/webServers.xml" );
+
+        /** @noinspection HttpUrlsUsage */
+        $xml->replace(
+            "/project/component[@name='WebServers']/option[@name='servers']/webServer",
+            [
+                "name" => "$devHost",
+                "url" => "http://$devHost/crm/_plugins",
+            ]
+        );
+
+        $xml->replace(
+            "/project/component[@name='WebServers']/option[@name='servers']/webServer[@name='$devHost']" .
+                "/fileTransfer[@rootFolder='/data/ucrm/data/plugins']",
+            [
+                "host" => "$sshHost",
+                "port" => "$sshPort",
+                "sshConfig" => "nginx@$sshHost:$sshPort password"
+            ]
+        );
+
+        //$xml->save();
+
+        #endregion
 
 
 
