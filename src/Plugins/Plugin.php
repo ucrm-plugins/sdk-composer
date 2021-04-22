@@ -11,6 +11,7 @@ use Composer\Plugin\PluginInterface;
 use Composer\Plugin\Capable;
 use Composer\Script\Event;
 use Composer\Util\Filesystem;
+use UCRM\Composer\Plugins\Commands\CommandProvider;
 
 /**
  * @copyright 2019 Spaeth Technologies, Inc.
@@ -149,7 +150,7 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
     public function getCapabilities(): array
     {
         return array(
-            CommandProviderCapability::class => Plugin\CommandProvider::class,
+            CommandProviderCapability::class => CommandProvider::class,
             //"hook": "@php -r \"$hook = $argv[1] ?? die('This is a test');\""
 
         );

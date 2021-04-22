@@ -1,17 +1,18 @@
 <?php
 declare( strict_types=1 );
 
-namespace UCRM\Composer\Plugins\Plugin;
+namespace UCRM\Composer\Plugins\Commands;
 
 use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
-use UCRM\Composer\Plugins\Hook\HookCommand;
+use UCRM\Composer\Plugins\Commands\HookCommand;
+use UCRM\Composer\Plugins\Commands\PluginCommand;
 
 class CommandProvider implements CommandProviderCapability
 {
     public function getCommands(): array
     {
         return [
-            new Command,
+            new PluginCommand,
             new HookCommand
         ];
     }

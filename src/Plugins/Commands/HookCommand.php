@@ -2,7 +2,7 @@
 /** @noinspection PhpUnusedParameterInspection */
 declare( strict_types=1 );
 
-namespace UCRM\Composer\Plugins\Hook;
+namespace UCRM\Composer\Plugins\Commands;
 
 use Deployment;
 use Exception;

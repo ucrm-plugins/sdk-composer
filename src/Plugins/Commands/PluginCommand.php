@@ -2,7 +2,7 @@
 /** @noinspection PhpUnusedParameterInspection */
 declare( strict_types=1 );
 
-namespace UCRM\Composer\Plugins\Plugin;
+namespace UCRM\Composer\Plugins\Commands;
 
 use Deployment;
 use Exception;
@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class Command extends BaseCommand
+class PluginCommand extends BaseCommand
 {
     private const REGEX_REPO = "/^[a-z0-9-]+$/";
     private const REGEX_NAME = "/^[a-z0-9-]+$/";
