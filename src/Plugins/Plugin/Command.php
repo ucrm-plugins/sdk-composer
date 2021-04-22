@@ -3,6 +3,7 @@ declare( strict_types=1 );
 
 namespace UCRM\Composer\Plugins\Plugin;
 
+use SimpleXMLElement;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -37,7 +38,10 @@ class Command extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        var_dump( "TEST" );
+        $this->fixPhpStorm();
+
+
+
 
 
 
@@ -45,7 +49,28 @@ class Command extends BaseCommand
     }
 
 
+    protected function xmlReplace( string $path)
+    {
+        $file = file_get_contents( $path );
 
+        $xml = new SimpleXMLElement($file);
+
+
+    }
+
+
+
+    protected function fixPhpStorm()
+    {
+
+        $file = file_get_contents( __PROJECT_DIR__ . "/.idea/deployment.xml" );
+
+        $xml = new SimpleXMLElement($file);
+
+        var_dump($xml);
+
+
+    }
 
 
 
