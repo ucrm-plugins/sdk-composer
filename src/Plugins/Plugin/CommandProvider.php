@@ -4,6 +4,7 @@ declare( strict_types=1 );
 namespace UCRM\Composer\Plugins\Plugin;
 
 use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
+use UCRM\Composer\Plugins\Hook\HookCommand;
 
 class CommandProvider implements CommandProviderCapability
 {
@@ -11,6 +12,7 @@ class CommandProvider implements CommandProviderCapability
     {
         return [
             new Command,
+            new HookCommand
         ];
     }
 }
