@@ -10,6 +10,7 @@ use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
 use Composer\Plugin\PluginInterface;
 use Composer\Plugin\Capable;
 use Composer\Script\Event;
+use Composer\Util\Filesystem;
 
 /**
  * @copyright 2019 Spaeth Technologies, Inc.
@@ -71,9 +72,41 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
      */
     public function postCreateProjectCommand(Event $event)
     {
-        var_dump("*** Created Plugin! ***");
-        chdir(__PROJECT_DIR__);
+        //var_dump("*** Created Plugin! ***");
+        chdir( __PROJECT_DIR__ );
+
+        $fs = new \Symfony\Component\Filesystem\Filesystem();
+
+        foreach( scandir( __PROJECT_DIR__ ) as $file )
+        {
+            if( $file === "." || $file === ".." )
+                continue;
+
+            $contents = file_get_contents($file);
+            $contents = preg_replace("/skeleton/m", __PROJECT_NAME__, $contents);
+            file_put_contents($file, $contents);
+
+            $event->getIO()->write( "<info>Updated file: '$file'</info>" . PHP_EOL );
+
+            if( strpos( $file, "skeleton" ) === 0 )
+            {
+                $fs->rename( $file, __PROJECT_NAME__ );
+                $event->getIO()->write( "<info>Renamed file: '$file'</info>" . PHP_EOL );
+            }
+        }
+
+
+
+
         echo exec("git init");
+
+        // Needs updated:
+        // - deployment.xml
+        // - modules.xml
+        // - php.xml
+        // - workspace.xml
+
+
     }
 
     public function getCapabilities(): array
