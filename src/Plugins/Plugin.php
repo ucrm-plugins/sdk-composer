@@ -146,6 +146,11 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 
     }
 
+    /**
+     *
+     *
+     * @return string[]
+     */
     public function getCapabilities(): array
     {
         return [
@@ -153,7 +158,11 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         ];
     }
 
-
+    /**
+     *
+     *
+     * @return string[]
+     */
     public static function getSubscribedEvents(): array
     {
 
