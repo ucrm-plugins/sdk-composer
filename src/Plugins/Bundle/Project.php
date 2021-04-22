@@ -61,6 +61,8 @@ class Project
             exit;
         }
 
+        var_dump(realpath( __DIR__ . "/../../../manifest.schema.json");
+
         $validator = new Validator();
         $validator->validate( $manifest, (object)[
             //'$ref' => "file://" . realpath( __DIR__ . "/../../../manifest.schema.json" )
