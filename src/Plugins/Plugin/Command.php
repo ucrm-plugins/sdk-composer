@@ -104,7 +104,7 @@ class Command extends BaseCommand
         $xml->replace(
             "/project/component[@name='PhpProjectServersManager']/servers/server[@name='$remote']",
             [
-                //"host" => "ucrm.dev.mvqn.net"
+                "host" => "ucrm.dev"
             ]
         );
 
@@ -112,7 +112,7 @@ class Command extends BaseCommand
             "/project/component[@name='PhpProjectServersManager']/servers/server[@name='$remote']" .
                 "/path_mappings/mapping[@local-root='\$PROJECT_DIR\$/dev/public.php']",
             [
-                "remote-root" => "/usr/src/ucrm/web/_plugins/" . __PLUGIN_NAME__ . "/public.php"
+                "remote-root" => "/usr/src/ucrm/web/_plugins/" . "__PLUGIN_NAME__" . "/public.php"
             ]
         );
 
@@ -120,7 +120,7 @@ class Command extends BaseCommand
             "/project/component[@name='PhpProjectServersManager']/servers/server[@name='$remote']" .
             "/path_mappings/mapping[@local-root='\$PROJECT_DIR\$/src']",
             [
-                "remote-root" => "/data/ucrm/data/plugins/" . __PLUGIN_NAME__
+                "remote-root" => "/data/ucrm/data/plugins/" . "__PLUGIN_NAME__"
             ]
         );
         //$xml->save();
