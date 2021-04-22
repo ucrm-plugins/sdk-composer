@@ -72,6 +72,8 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
     public function postCreateProjectCommand(Event $event)
     {
         var_dump("*** Created Plugin! ***");
+        chdir(__PROJECT_DIR__);
+        echo exec("git init");
     }
 
     public function getCapabilities(): array

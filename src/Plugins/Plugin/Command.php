@@ -88,17 +88,15 @@ class Command extends BaseCommand
         $this->sshPort = $this->askRegex( $io, "SSH Port    ", "9022",              self::REGEX_PORT );
         $this->sshUser = $this->askRegex( $io, "SSH User    ", "nginx",             self::REGEX_USER );
 
-
-        var_dump($this->devHost);
-
-        exit;
-
-
         // Fix composer.json
 
         // Fix manifest.json
 
         $this->fixManifest($input, $output);
+
+
+
+        exit;
 
         if($input->getOption("fix-phpstorm"))
         {
@@ -149,22 +147,16 @@ class Command extends BaseCommand
     protected function fixPhpStorm(InputInterface $input, OutputInterface $output)
     {
 
-        $srcName = __PLUGIN_NAME__;
+        $srcName = $this->srcName;
 
-        $devHost = "ucrm.dev.mvqn.net";
+        $devHost = $this->devHost;
 
-        $ideHost = "localhost";
-        $idePort = "4000";
+        $ideHost = $this->ideHost;
+        $idePort = $this->idePort;
 
-        $sshHost = $devHost;
-        $sshPort = 9022;
-        $sshUser = "nginx";
-
-
-
-
-
-
+        $sshHost = $this->sshHost;
+        $sshPort = $this->sshPort;
+        $sshUser = $this->sshUser;
 
         #region .idea/deployment.xml
 
