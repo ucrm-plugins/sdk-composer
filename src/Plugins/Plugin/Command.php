@@ -70,7 +70,9 @@ class Command extends BaseCommand
             exit;
         }
 
-        $this->srcRepo = $io->ask("Organization:", "ucrm-plugins", self::REGEX_NAME);
+        $regex = self::REGEX_NAME;
+
+        $this->srcRepo = $io->ask("Organization:", "ucrm-plugins", function(string $answer) use ($regex) { return (preg_match($regex, $answer) !== false ? $answer : ""); });
         $this->srcName = $io->ask("Plugin Name :", "skeleton",     self::REGEX_NAME);
 
         $this->devHost = $io->ask("Remote Host :", "ucrm.dev.mvqn.net");
@@ -100,6 +102,12 @@ class Command extends BaseCommand
 
 
 
+    }
+
+
+    protected function validator(string $regex): bool
+    {
+        //return ( preg_match($regex, )  )
     }
 
 
