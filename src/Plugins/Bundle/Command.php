@@ -87,7 +87,6 @@ class Command extends BaseCommand
             ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["suffix"]
             ?? "";
 
-        //if( strpos( $suffix, "{" ) !== false && strpos( $suffix, "}" ) !== false )
         if( preg_match('#([A-Za-z0-9._-]*)({[A-Z_]+})?([A-Za-z0-9._-]*)#m', $suffix, $matches) !== false )
         {
             $suffix = $matches[1];
