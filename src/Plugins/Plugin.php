@@ -77,7 +77,7 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
     public function getCapabilities(): array
     {
         return array(
-            CommandProviderCapability::class => Bundle\CommandProvider::class
+            CommandProviderCapability::class => Plugin\CommandProvider::class
         );
     }
 
