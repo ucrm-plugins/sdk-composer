@@ -94,6 +94,9 @@ class Command extends BaseCommand
 
             switch( $matches[2] )
             {
+                case "":
+                    break;
+
                 case "{PLUGIN_VERSION}":
                     $suffix .= $manifest["information"]["version"];
                     break;
