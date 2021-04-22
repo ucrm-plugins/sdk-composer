@@ -28,45 +28,7 @@ class Command extends BaseCommand
 
     }
 
-    /**
-     * Handles validation of the project prior to the plugin's execution.
-     *
-     * @param InputInterface  $input    Input from the composer system.
-     * @param OutputInterface $output   Output to the composer system.
-     *
-     * @return bool                     Returns TRUE if the project appears to be valid, otherwise FALSE.
-     */
-    protected function validate(InputInterface $input, OutputInterface $output): bool
-    {
-        $io = new SymfonyStyle($input, $output);
 
-        if( __DEPLOYMENT__ === Deployment::REMOTE )
-        {
-            $io->error( [
-                "The 'bundle' command cannot be used on a remotely deployed project."
-            ] );
-            exit;
-        }
-
-        if( !file_exists( __PLUGIN_DIR__ . "/manifest.json" ) || !file_exists( __PLUGIN_DIR__ . "/main.php" ) )
-        {
-            $io->error( [
-                "The plugin at: '".__PLUGIN_DIR__."' does not contain the required plugin files.",
-                "https://github.com/Ubiquiti-App/UCRM-plugins/blob/master/docs/file-structure.md#required-files",
-            ] );
-            exit;
-        }
-
-        if( !file_exists( __PROJECT_DIR__ . "/src" ) || !is_dir( __PROJECT_DIR__ . "/src" ) )
-        {
-            $io->error( [
-                "The UCRM Plugin code is expected to reside at: '" . __PROJECT_DIR__ . DIRECTORY_SEPARATOR . "src'."
-            ] );
-            exit;
-        }
-
-        return true;
-    }
 
     /**
      * Handles validation of the project prior to the plugin's execution.
@@ -77,7 +39,7 @@ class Command extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Perform project validation.
-        $this->validate($input, $output);
+        Project::validate($input, $output);
 
         chdir(__PROJECT_DIR__);
 
@@ -91,7 +53,7 @@ class Command extends BaseCommand
         $fs->copy("composer.json", "src/composer.json");
         $fs->copy("composer.lock", "src/composer.lock");
 
-        self::fixSubFolders();
+        Project::fixSubFolders();
 
         $io = new SymfonyStyle($input, $output);
         $io->newLine();
@@ -153,10 +115,10 @@ class Command extends BaseCommand
 
         $dir = $input->getOption("dir")
             //?? self::fixSubFolder($this->getComposer()->getPackage()->getExtra()["bundle"]["dir"])
-            ?? self::fixRelativeDir($this->getComposer()->getPackage()->getExtra()["bundle"]["dir"])
+            ?? Project::fixRelativeDir($this->getComposer()->getPackage()->getExtra()["bundle"]["dir"])
             ?? __PROJECT_DIR__ . "/zip/";
 
-        $abs = self::pathIsAbsolute($dir) ? $dir : getcwd() . "/$dir";
+        $abs = Project::isAbsolutePath($dir) ? $dir : getcwd() . "/$dir";
 
         if( !realpath($abs) )
             mkdir( $dir, 0777, TRUE );
@@ -209,127 +171,9 @@ class Command extends BaseCommand
 
 
 
-    private static function pathIsAbsolute( $path )
-    {
-        // Windows
-        if( preg_match( '#^[a-zA-Z]:\\\\#', $path ) )
-            return true;
-
-        //if( strpos( $path, "/" ) === 0 )
-        //    return true;
-
-        return strpos( $path, "/" ) === 0;
-
-        //if( strpos( $path, "./" ) === 0 || strpos( $path, "../" ) === 0 )
-        //    return false;
-
-
-    }
-
-    private static function fixSubFolders( string $path = __PROJECT_DIR__ . "/src/composer.json" )
-    {
-        $folders = [];
-
-        foreach( scandir( __PROJECT_DIR__ ) as $file )
-            if( $file !== "." && $file !== ".." && is_dir($file) && $file !== "src" )
-                $folders[] = $file;
-
-        $contents = file_get_contents( $path );
-
-        $contents = preg_replace( '#("(?:./)?src/?)#m', '"', $contents );
-
-
-        //$contents = preg_replace( '#("archive-format" *: *)("zip")#m', '${1}"ZIP"', $contents );
-
-        //$returns = [];
-
-        foreach( $folders as $folder )
-        {
-            $contents = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $contents );
-
-            /*
-            foreach($vars as $var)
-            {
-
-
-                if( ( $rep = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $var ) ) !== false )
-                {
-                    var_dump($rep);
-                    $returns[] = $rep;
-                }
-            }
-            */
-        }
-
-        //$contents = preg_replace( '#("archive-format" *: *)("ZIP")#m', '${1}"zip"', $contents );
-
-        $contents = preg_replace( '#"../sdk-#m', '"../../sdk-', $contents );
-
-        // ../sdk
-
-        file_put_contents( $path, $contents );
-
-        //return $returns;
-    }
-
-    private static function fixSubFolder( string $folder ): string
-    {
-        $folders = [];
-
-        foreach( scandir( __PROJECT_DIR__ ) as $file )
-            if( $file !== "." && $file !== ".." && is_dir($file) && $file !== "src" )
-                $folders[] = $file;
-
-        $contents = $folder;
-
-        $contents = preg_replace( '#((?:./)?src/?)#m', '', $contents );
-
-
-        //$contents = preg_replace( '#("archive-format" *: *)("zip")#m', '${1}"ZIP"', $contents );
-
-        //$returns = [];
-
-        foreach( $folders as $folder )
-        {
-            $contents = preg_replace( '#((?:./)?' . $folder . '/?)#m', '../' . $folder . '/', $contents );
-
-            /*
-            foreach($vars as $var)
-            {
-
-
-                if( ( $rep = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $var ) ) !== false )
-                {
-                    var_dump($rep);
-                    $returns[] = $rep;
-                }
-            }
-            */
-        }
-
-        //$contents = preg_replace( '#("archive-format" *: *)("ZIP")#m', '${1}"zip"', $contents );
-
-        $contents = preg_replace( '#"../sdk-#m', '"../../sdk-', $contents );
-
-        // ../sdk
-
-        //file_put_contents( $path, $contents );
-        return $contents;
-        //return $returns;
-    }
 
 
 
-    private static function fixRelativeDir( string $folder ): string
-    {
-        if( self::pathIsAbsolute($folder) )
-            return $folder;
-
-        $folder = preg_replace( '#((?:./)?src/?)#m', '', $folder );
-        $folder = preg_replace( '#((?:./)?([A-Za-z0-9._-]+)/?)#m', '../${2}/', $folder );
-
-        return $folder;
-    }
 
 
 
