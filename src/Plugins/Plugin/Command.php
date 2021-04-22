@@ -101,10 +101,12 @@ class Command extends BaseCommand
         $xml = new SimpleXMLElement($file);
 
         //var_dump($xml);
-        $test = $xml->xpath("/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping")[0];
-        $test["deploy"] = "testing";
+        $mapping = $xml->xpath( "/project/component/serverData/paths[@name='remote']/serverdata/mappings/mapping" )[0];
+        $mapping["deploy"] = "/" . __PLUGIN_NAME__;
+        $mapping["web"]    = "/" . __PLUGIN_NAME__;
 
-        var_dump( $test );
+
+        var_dump( $mapping );
 
     }
 
