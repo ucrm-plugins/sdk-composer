@@ -55,10 +55,6 @@ class Command extends BaseCommand
 
         Project::fixSubFolders();
 
-
-        exit;
-
-
         $io = new SymfonyStyle($input, $output);
         $io->newLine();
 
@@ -136,6 +132,7 @@ class Command extends BaseCommand
         #endregion
 
 
+        exit;
 
 
 
