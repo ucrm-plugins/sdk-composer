@@ -79,7 +79,7 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 
         foreach( scandir( getcwd() ) as $file )
         {
-            if( $file === "." || $file === ".." )
+            if( $file === "." || $file === ".." || is_dir($file) )
                 continue;
 
             $contents = file_get_contents($file);
