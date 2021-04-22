@@ -66,13 +66,13 @@ class Project
         //$schema = json_decode(file_get_contents(
         //    "https://gitlab.com/ucrm-plugins/sdk-composer/raw/master/manifest.schema.json"), true);
 
-        //$schema = json_decode(file_get_contents(__DIR__ . "/../../../manifest.schema.json"), true);
+        $schema = json_decode(file_get_contents(__DIR__ . "/../../../manifest.schema.json"), true);
 
         $validator = new Validator();
         $validator->validate( $manifest, (object)[
-            '$ref' => "file://" . realpath( __DIR__ . "/../../../manifest.schema.json" )
+            //'$ref' => "file://" . realpath( __DIR__ . "/../../../manifest.schema.json" )
             //'$ref' => "https://gitlab.com/ucrm-plugins/sdk-composer/raw/master/manifest.schema.json"
-            //'$ref' => (object)$schema
+            '$ref' => (object)$schema
         ] );
 
         if ( !$validator->isValid() )
