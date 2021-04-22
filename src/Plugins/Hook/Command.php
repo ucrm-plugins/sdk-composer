@@ -1,15 +1,19 @@
-<?php
+<?php /** @noinspection PhpUnused */
+/** @noinspection PhpUnusedParameterInspection */
 declare( strict_types=1 );
 
-namespace UCRM\Composer\Plugins\Plugin;
+namespace UCRM\Composer\Plugins\Hook;
 
-use Composer\Command\BaseCommand;
+use Deployment;
 use Exception;
+use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Composer\Command\BaseCommand;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
-final class HookCommand extends BaseCommand
+class Command extends BaseCommand
 {
     /**
      * Configures this plugin for use with the composer system.
@@ -39,8 +43,20 @@ final class HookCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $io = new SymfonyStyle($input, $output);
+
+
+
+
 
     }
+
+
+
+
+
+
+
 
 
 }
