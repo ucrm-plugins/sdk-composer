@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Filesystem;
 class Command extends BaseCommand
 {
     private const REGEX_PORT = "#^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$#";
-    private const REGEX_NAME = "#^([a-z0-9-]+)#";
+    private const REGEX_NAME = "#[a-z0-9-]+#";
 
     protected $srcRepo;
     protected $srcName;
@@ -72,7 +72,12 @@ class Command extends BaseCommand
 
         $regex = self::REGEX_NAME;
 
-        $this->srcRepo = $io->ask("Organization:", "ucrm-plugins", [ get_class($this), "validateName"]);
+        $this->srcRepo = $this->askRegex($io, "Organization:", "ucrm-plugins", self::REGEX_NAME );
+
+
+        exit;
+
+        $this->srcRepo = $io->ask("Organization:", "ucrm-plugins", [ $this, "validateName" ] );
         $this->srcName = $io->ask("Plugin Name :", "skeleton",     self::REGEX_NAME);
 
         $this->devHost = $io->ask("Remote Host :", "ucrm.dev.mvqn.net");
@@ -105,7 +110,21 @@ class Command extends BaseCommand
     }
 
 
-    protected static function validateName(string $answer)
+    protected function askRegEx(SymfonyStyle $io, string $question, ?string $default, string $regex): string
+    {
+        do
+        {
+            $answer = $io->ask( $question, $default );
+            $valid = preg_match( $regex, $answer ) === 1;
+            if( !$valid )
+                $io->text("Response must be in the format: '$regex'");
+        }
+        while(!$valid);
+
+        return $answer;
+    }
+
+    public function validateName(string $answer)
     {
         return ( preg_match(self::REGEX_NAME, $answer) !== FALSE) ? $answer : FALSE;
     }
