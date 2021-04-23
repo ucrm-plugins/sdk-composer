@@ -1,7 +1,7 @@
 <?php
 declare( strict_types=1 );
 
-namespace UCRM\Composer\Plugins\Commands;
+namespace UCRM\Composer\Plugins\Commands\Helpers;
 
 use Deployment;
 use JsonSchema\Validator;
@@ -9,9 +9,17 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @copyright 2019 Spaeth Technologies, Inc.
+ * @author    Ryan Spaeth (rspaeth@mvqn.net)
+ *
+ * Class Project
+ *
+ * @package   UCRM\Composer\Plugins\Commands\Helpers
+ *
+ */
 class Project
 {
-
     /**
      * Handles validation of the project prior to the plugin's execution.
      *
@@ -84,13 +92,12 @@ class Project
         return true;
     }
 
-
     /**
      * Determines whether or not a path is absolute or relative.
      *
-     * @param string $path
+     * @param string $path              The path to examine.
      *
-     * @return bool
+     * @return bool                     Returns TRUE if the path is absolute, otherwise FALSE.
      */
     public static function isAbsolutePath( string $path ): bool
     {
@@ -99,47 +106,11 @@ class Project
     }
 
     /**
-     * Alters relative paths to coincide with the folder structure AFTER the 'bundle' command.
+     * Refactors relative paths inside the specified file.
      *
-     * @param string $path              The path to check and/or modify.
-     *
-     * @return string                   Returns the unmodified absolute path or the modified relative path.
+     * @param string $path              An optional file on which to operate, defaults to the Project's 'composer.json'.
      */
-    /*
-    public static function fixRelativeDir( string $path ): string
-    {
-        if( self::isAbsolutePath($path) )
-            return $path;
-
-        // The 'src' folder is unique.
-        if( ( $fixed = preg_replace( '#((?:./)?src/?)#m', '', $path ) ) !== $path )
-        {
-            //$path = $fixed;
-            //return TRUE;
-            return $fixed;
-        }
-
-        if( ( $fixed = preg_replace( '#((?:./)?([A-Za-z0-9._-]+)/?)#m', '../${2}/', $path ) ) !== $path )
-        {
-            //$path = $fixed;
-            //return TRUE;
-            return $fixed;
-        }
-
-        //return FALSE;
-        return $path;
-
-        //return preg_replace( '#((?:./)?([A-Za-z0-9._-]+)/?)#m', '../${2}/', $path );
-
-
-
-
-    }
-    */
-
-
-
-    public static function fixSubFolders( string $path = __PROJECT_DIR__ . "/src/composer.json" ): void
+    public static function fixSubFolders( string $path = __PROJECT_DIR__ . "/src/composer.json" )
     {
         $folders = [];
 
@@ -151,92 +122,13 @@ class Project
 
         $contents = preg_replace( '#("(?:./)?src/?)#m', '"', $contents );
 
-
-        //$contents = preg_replace( '#("archive-format" *: *)("zip")#m', '${1}"ZIP"', $contents );
-
-        //$returns = [];
-
         foreach( $folders as $folder )
-        {
             $contents = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $contents );
 
-            /*
-            foreach($vars as $var)
-            {
-
-
-                if( ( $rep = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $var ) ) !== false )
-                {
-                    var_dump($rep);
-                    $returns[] = $rep;
-                }
-            }
-            */
-        }
-
-        //$contents = preg_replace( '#("archive-format" *: *)("ZIP")#m', '${1}"zip"', $contents );
-
         $contents = preg_replace( '#"../sdk-#m', '"../../sdk-', $contents );
-
-        // ../sdk
 
         file_put_contents( $path, $contents );
 
-        //return $returns;
     }
-
-    /*
-    public static function fixSubFolder( string $folder ): string
-    {
-        $folders = [];
-
-        foreach( scandir( __PROJECT_DIR__ ) as $file )
-            if( $file !== "." && $file !== ".." && is_dir($file) && $file !== "src" )
-                $folders[] = $file;
-
-        $contents = $folder;
-
-        $contents = preg_replace( '#((?:./)?src/?)#m', '', $contents );
-
-
-        //$contents = preg_replace( '#("archive-format" *: *)("zip")#m', '${1}"ZIP"', $contents );
-
-        //$returns = [];
-
-        foreach( $folders as $folder )
-        {
-            $contents = preg_replace( '#((?:./)?' . $folder . '/?)#m', '../' . $folder . '/', $contents );
-
-
-            foreach($vars as $var)
-            {
-
-
-                if( ( $rep = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $var ) ) !== false )
-                {
-                    var_dump($rep);
-                    $returns[] = $rep;
-                }
-            }
-
-        }
-
-        //$contents = preg_replace( '#("archive-format" *: *)("ZIP")#m', '${1}"zip"', $contents );
-
-        $contents = preg_replace( '#"../sdk-#m', '"../../sdk-', $contents );
-
-        // ../sdk
-
-        //file_put_contents( $path, $contents );
-        return $contents;
-        //return $returns;
-    }
-    */
-
-
-
-
-
-
 
 }

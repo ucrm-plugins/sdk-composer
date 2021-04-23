@@ -11,7 +11,7 @@ use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
  *
  * Class CommandProvider
  *
- * @package   UCRM\Composer\Plugins\Commands
+ * @package   UCRM\Composer\Plugins
  *
  */
 class CommandProvider implements CommandProviderCapability
@@ -20,8 +20,8 @@ class CommandProvider implements CommandProviderCapability
     {
         return [
             new Commands\BundleCommand,
-            new Commands\PluginCommand,
             new Commands\HookCommand
         ];
+
     }
 }

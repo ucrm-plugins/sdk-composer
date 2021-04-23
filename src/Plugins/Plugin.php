@@ -29,6 +29,8 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
     /** @var IOInterface */
     protected $io;
 
+    #region PluginInterface
+
     /**
      *
      *
@@ -67,8 +69,46 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         // TODO: Implement uninstall() method.
     }
 
+    #endregion
+
+    #region Capable
+
     /**
      *
+     *
+     * @return string[]
+     */
+    public function getCapabilities(): array
+    {
+        return [
+            CommandProviderCapability::class => CommandProvider::class,
+        ];
+    }
+
+    #endregion
+
+    #region EventSubscriberInterface
+
+    /**
+     *
+     *
+     * @return string[]
+     */
+    public static function getSubscribedEvents(): array
+    {
+
+        return [
+            "post-create-project-cmd" => "postCreateProjectCommand",
+        ];
+
+    }
+
+    #endregion
+
+    /**
+     * Handles the 'post-create-project-cmd' event.
+     *
+     * @param Event $event
      */
     public function postCreateProjectCommand(Event $event)
     {
@@ -143,32 +183,6 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         echo exec("git init");
 
         #endregion
-
-    }
-
-    /**
-     *
-     *
-     * @return string[]
-     */
-    public function getCapabilities(): array
-    {
-        return [
-            CommandProviderCapability::class => CommandProvider::class,
-        ];
-    }
-
-    /**
-     *
-     *
-     * @return string[]
-     */
-    public static function getSubscribedEvents(): array
-    {
-
-        return [
-            "post-create-project-cmd" => "postCreateProjectCommand",
-        ];
 
     }
 

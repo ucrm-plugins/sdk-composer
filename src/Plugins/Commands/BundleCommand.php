@@ -9,6 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
+use UCRM\Composer\Plugins\Commands\Helpers\Project;
 
 /**
  * @copyright 2019 Spaeth Technologies, Inc.
@@ -21,9 +22,8 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class BundleCommand extends BaseCommand
 {
-
     /**
-     * Configures this plugin for use with the composer system.
+     * Configures this command for use with the composer system.
      */
     protected function configure()
     {
@@ -36,10 +36,8 @@ class BundleCommand extends BaseCommand
 
     }
 
-
-
     /**
-     * Handles validation of the project prior to the plugin's execution.
+     * Executes when this command is used.
      *
      * @param InputInterface  $input    Input from the composer system.
      * @param OutputInterface $output   Output to the composer system.

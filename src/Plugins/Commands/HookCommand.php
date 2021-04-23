@@ -11,6 +11,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @copyright 2019 Spaeth Technologies, Inc.
+ * @author    Ryan Spaeth (rspaeth@mvqn.net)
+ *
+ * Class HookCommand
+ *
+ * @package   UCRM\Composer\Plugins\Commands
+ *
+ */
 class HookCommand extends BaseCommand
 {
     /**
