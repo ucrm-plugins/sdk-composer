@@ -71,7 +71,7 @@ class Project
 
         $validator = new Validator();
         $validator->validate( $manifest, (object)[
-            '$ref' => (object)json_decode( file_get_contents( __DIR__ . "/../../../manifest.schema.json" ), true )
+            '$ref' => (object)json_decode( file_get_contents( __DIR__ . "/../../../../manifest.schema.json" ), true )
         ] );
 
         if ( !$validator->isValid() )
