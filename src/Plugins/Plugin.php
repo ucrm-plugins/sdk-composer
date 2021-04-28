@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpUnused */
+<?php /** @noinspection PhpUnused, HtmlUnknownTag  */
 declare( strict_types=1 );
 
 namespace UCRM\Composer\Plugins;

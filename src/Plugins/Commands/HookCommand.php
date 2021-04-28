@@ -1,4 +1,4 @@
-<?php /** @noinspection PhpUnused, PhpUnusedParameterInspection */
+<?php /** @noinspection PhpUnused */
 declare( strict_types=1 );
 
 namespace UCRM\Composer\Plugins\Commands;
@@ -68,13 +68,5 @@ class HookCommand extends BaseCommand
         include $file;
 
     }
-
-
-
-
-
-
-
-
 
 }
