@@ -123,7 +123,12 @@ class Project
         $contents = preg_replace( '#("(?:./)?src/?)#m', '"', $contents );
 
         foreach( $folders as $folder )
-            $contents = preg_replace( '#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $contents );
+        {
+            if($folder === "dev")
+                continue;
+
+            $contents = preg_replace('#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $contents);
+        }
 
         $contents = preg_replace( '#"../sdk-#m', '"../../sdk-', $contents );
 
