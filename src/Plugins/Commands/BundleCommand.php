@@ -68,6 +68,8 @@ class BundleCommand extends BaseCommand
 
         Project::fixSubFolders();
 
+        exit;
+
         $io = new SymfonyStyle($input, $output);
         $io->newLine();
 
