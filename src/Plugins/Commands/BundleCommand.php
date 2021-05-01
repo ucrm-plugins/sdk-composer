@@ -42,7 +42,7 @@ class BundleCommand extends BaseCommand
      * @param InputInterface  $input    Input from the composer system.
      * @param OutputInterface $output   Output to the composer system.
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Perform project validation.
         Project::validate($input, $output);
@@ -180,6 +180,7 @@ class BundleCommand extends BaseCommand
 
         $io->success("Plugin bundle created successfully at: '$path".DIRECTORY_SEPARATOR."$name.$format'");
 
+        return 0;
     }
 
 
