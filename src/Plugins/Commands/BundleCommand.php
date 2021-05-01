@@ -45,7 +45,12 @@ class BundleCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         // Perform project validation.
-        Project::validate($input, $output);
+        $valid = Project::validate($input, $output);
+
+        if(!$valid)
+            return 0;
+
+
 
         chdir(__PROJECT_DIR__);
 

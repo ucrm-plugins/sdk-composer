@@ -37,7 +37,7 @@ class Project
             $io->error( [
                 "The 'bundle' command cannot be used on a remotely deployed project."
             ] );
-            exit;
+            return false;
         }
 
         if( !file_exists( __PROJECT_DIR__ . "/src" ) || !is_dir( __PROJECT_DIR__ . "/src" ) )
@@ -46,7 +46,7 @@ class Project
                 "The Plugin's code is expected to reside at: '" . __PROJECT_DIR__ . DIRECTORY_SEPARATOR . "src'.",
                 "See: https://gitlab.com/ucrm-plugins/skeleton"
             ] );
-            exit;
+            return false;
         }
 
         if( !file_exists( __PLUGIN_DIR__ . "/manifest.json" ) || !file_exists( __PLUGIN_DIR__ . "/main.php" ) )
@@ -55,7 +55,7 @@ class Project
                 "The Plugin at: '".__PLUGIN_DIR__."' does not contain the required files.",
                 "See: https://github.com/Ubiquiti-App/UCRM-plugins/blob/master/docs/file-structure.md#required-files",
             ] );
-            exit;
+            return false;
         }
 
         $manifest = json_decode( file_get_contents( __PLUGIN_DIR__ . "/manifest.json" ), true );
@@ -66,7 +66,7 @@ class Project
                 "An error occurred while parsing the Plugin's 'manifest.json' file.",
                 "Error: $error"
             ] );
-            exit;
+            return false;
         }
 
         $validator = new Validator();
@@ -84,7 +84,7 @@ class Project
                 $errors[] = sprintf( "[%s] %s\n", $error["property"], $error["message"] );
 
             $io->error( $errors );
-            exit;
+            return false;
         }
 
         // TODO: Add more validation, as needed!
