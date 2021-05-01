@@ -130,7 +130,7 @@ class Project
             $contents = preg_replace('#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $contents);
         }
 
-        $contents = preg_replace( '#"../sdk-#m', '"../../sdk-', $contents );
+        $contents = preg_replace( '#"../sdk#m', '"../../sdk', $contents );
 
         file_put_contents( $path, $contents );
 
