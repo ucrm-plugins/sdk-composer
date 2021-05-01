@@ -121,6 +121,7 @@ class Project
         $contents = file_get_contents( $path );
 
         $contents = preg_replace( '#("(?:./)?src/?)#m', '"', $contents );
+        $contents = preg_replace( '#"../#m', '"../../', $contents );
 
         foreach( $folders as $folder )
         {
@@ -130,7 +131,8 @@ class Project
             $contents = preg_replace('#("(?:./)?' . $folder . '/?)#m', '"../' . $folder . '/', $contents);
         }
 
-        $contents = preg_replace( '#"../sdk#m', '"../../sdk', $contents );
+        //$contents = preg_replace( '#"../../sdk#m', '"../../../sdk', $contents );
+
 
         file_put_contents( $path, $contents );
 
