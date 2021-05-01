@@ -159,7 +159,7 @@ class BundleCommand extends BaseCommand
         }
 
         $io->newLine();
-        echo exec( "cd src && composer archive --file=$name --dir=$path --format=$format --ansi --verbose" );
+        echo exec( "cd src && composer archive --file=$name --dir=$path --format=$format --ansi" );
         $io->newLine(2);
 
         if( $noDev )
