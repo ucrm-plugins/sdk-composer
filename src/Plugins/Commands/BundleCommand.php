@@ -149,12 +149,14 @@ class BundleCommand extends BaseCommand
 
         if( $noDev )
         {
+            /*
             if( !file_exists( __PROJECT_DIR__ . "/tmp/" ) )
                 mkdir( __PROJECT_DIR__ . "/tmp/", 0777, true );
 
             $io->block( "Creating 'vendor' backup...", null, "fg=green", "" );
             $fs->remove( "tmp/vendor_bak" );
             $fs->mirror( "src/vendor", "tmp/vendor_bak" );
+            */
 
             $io->block( "Updating production dependencies...", null, "fg=green", "" );
             echo exec( "cd src && composer update --no-interaction --no-dev --ansi" );
@@ -171,13 +173,17 @@ class BundleCommand extends BaseCommand
 
         if( $noDev )
         {
+            /*
             $io->block( "Restoring 'vendor' backup...", null, "fg=green", "" );
             $fs->remove( "src/vendor" );
             $fs->rename( "tmp/vendor_bak", "src/vendor" );
+            */
         }
 
-        $io->block( "Restoring autoload class-maps...", null, "fg=green", "" );
-        echo exec( "composer dump-autoload --no-interaction --ansi" );
+        //$io->block( "Restoring autoload class-maps...", null, "fg=green", "" );
+        //echo exec( "composer dump-autoload --no-interaction --ansi" );
+        $io->block( "Updating development dependencies...", null, "fg=green", "" );
+        echo exec( "cd src && composer update --no-interaction --ansi" );
         $io->newLine(2);
 
         $io->block( "Cleaning up...", null, "fg=green", "" );
