@@ -1,7 +1,10 @@
-<?php /** @noinspection PhpUnused, HtmlUnknownTag  */
-declare( strict_types=1 );
+<?php
 
-namespace UCRM\Composer\Plugins;
+/** @noinspection PhpUnused, HtmlUnknownTag  */
+
+declare(strict_types=1);
+
+namespace UCRM\Plugins\SDK\Composer\Plugins;
 
 use Composer\Composer;
 use Composer\EventDispatcher\EventSubscriberInterface;
@@ -37,14 +40,13 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
      * @param Composer    $composer
      * @param IOInterface $io
      */
-    public function activate( Composer $composer, IOInterface $io )
+    public function activate(Composer $composer, IOInterface $io)
     {
         $this->composer = $composer;
         $this->io = $io;
 
         /** @noinspection PhpIncludeInspection */
-        require_once realpath( __DIR__ . "/../../defines.php" );
-
+        require_once realpath(__DIR__ . "/../../defines.php");
     }
 
     /**
@@ -53,7 +55,7 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
      * @param Composer    $composer
      * @param IOInterface $io
      */
-    public function deactivate( Composer $composer, IOInterface $io )
+    public function deactivate(Composer $composer, IOInterface $io)
     {
         // TODO: Implement deactivate() method.
     }
@@ -64,7 +66,7 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
      * @param Composer    $composer
      * @param IOInterface $io
      */
-    public function uninstall( Composer $composer, IOInterface $io )
+    public function uninstall(Composer $composer, IOInterface $io)
     {
         // TODO: Implement uninstall() method.
     }
@@ -100,7 +102,6 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         return [
             "post-create-project-cmd" => "postCreateProjectCommand",
         ];
-
     }
 
     #endregion
@@ -116,23 +117,21 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 
         #region .idea/*
 
-        chdir( __PROJECT_DIR__ . "/.idea/" );
+        chdir(__PROJECT_DIR__ . "/.idea/");
 
-        foreach( scandir( getcwd() ) as $file )
-        {
-            if( $file === "." || $file === ".." || is_dir($file) )
+        foreach (scandir(getcwd()) as $file) {
+            if ($file === "." || $file === ".." || is_dir($file))
                 continue;
 
             $contents = file_get_contents($file);
-            $contents = preg_replace( "/skeleton/m", __PROJECT_NAME__, $contents );
-            file_put_contents( $file, $contents );
+            $contents = preg_replace("/skeleton/m", __PROJECT_NAME__, $contents);
+            file_put_contents($file, $contents);
 
-            $event->getIO()->write( "<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "$file'</info>" );
+            $event->getIO()->write("<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "$file'</info>");
 
-            if( preg_match("/^skeleton(.*)$/", $file, $matches) === 1 && count($matches) === 2 )
-            {
-                $fs->rename( $file, __PROJECT_NAME__ . $matches[1] );
-                $event->getIO()->write( "<info>Renamed file: '" . getcwd() . DIRECTORY_SEPARATOR . "$file'</info>" );
+            if (preg_match("/^skeleton(.*)$/", $file, $matches) === 1 && count($matches) === 2) {
+                $fs->rename($file, __PROJECT_NAME__ . $matches[1]);
+                $event->getIO()->write("<info>Renamed file: '" . getcwd() . DIRECTORY_SEPARATOR . "$file'</info>");
             }
         }
 
@@ -140,51 +139,49 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 
         #region dev/public.php
 
-        chdir( __PROJECT_DIR__ . "/dev/" );
+        chdir(__PROJECT_DIR__ . "/dev/");
 
-        $contents = file_get_contents( "public.php" );
-        $contents = preg_replace( "/skeleton/m", __PROJECT_NAME__, $contents );
-        file_put_contents( "public.php", $contents );
+        $contents = file_get_contents("public.php");
+        $contents = preg_replace("/skeleton/m", __PROJECT_NAME__, $contents);
+        file_put_contents("public.php", $contents);
 
-        $event->getIO()->write( "<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "public.php'</info>" );
+        $event->getIO()->write("<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "public.php'</info>");
 
         #endregion
 
         #region src/manifest.json
 
-        chdir( __PROJECT_DIR__ . "/src/" );
+        chdir(__PROJECT_DIR__ . "/src/");
 
-        $contents = file_get_contents( "manifest.json" );
-        $contents = preg_replace( "/skeleton/m", __PROJECT_NAME__, $contents );
-        $contents = preg_replace( "/Skeleton/m", ucfirst( __PROJECT_NAME__ ), $contents );
+        $contents = file_get_contents("manifest.json");
+        $contents = preg_replace("/skeleton/m", __PROJECT_NAME__, $contents);
+        $contents = preg_replace("/Skeleton/m", ucfirst(__PROJECT_NAME__), $contents);
 
-        file_put_contents( "manifest.json", $contents );
+        file_put_contents("manifest.json", $contents);
 
-        $event->getIO()->write( "<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "manifest.json'</info>" );
+        $event->getIO()->write("<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "manifest.json'</info>");
 
         #endregion
 
         #region composer.json
 
-        chdir( __PROJECT_DIR__ );
+        chdir(__PROJECT_DIR__);
 
-        $contents = file_get_contents( "composer.json" );
-        $contents = preg_replace( "/skeleton/m", __PROJECT_NAME__, $contents );
-        file_put_contents( "composer.json", $contents );
+        $contents = file_get_contents("composer.json");
+        $contents = preg_replace("/skeleton/m", __PROJECT_NAME__, $contents);
+        file_put_contents("composer.json", $contents);
 
-        $event->getIO()->write( "<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "composer.json'</info>" );
+        $event->getIO()->write("<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "composer.json'</info>");
 
         #endregion
 
         #region .git/
 
-        chdir( __PROJECT_DIR__ );
+        chdir(__PROJECT_DIR__);
 
         echo exec("git init");
 
         #endregion
 
     }
-
 }
-

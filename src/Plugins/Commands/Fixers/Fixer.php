@@ -1,7 +1,10 @@
-<?php /** @noinspection PhpUnused */
-declare( strict_types=1 );
+<?php
 
-namespace UCRM\Composer\Plugins\Commands\Fixers;
+/** @noinspection PhpUnused */
+
+declare(strict_types=1);
+
+namespace UCRM\Plugins\SDK\Composer\Plugins\Commands\Fixers;
 
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
@@ -25,12 +28,12 @@ abstract class Fixer
     /**
      * @param string $path              The path to the file whose contents will be fixed.
      */
-    public function __construct( string $path )
+    public function __construct(string $path)
     {
-        if( ( $this->path = realpath( $path ) ) === false )
+        if (($this->path = realpath($path)) === false)
             throw new FileNotFoundException();
 
-        $this->text = file_get_contents( $this->path );
+        $this->text = file_get_contents($this->path);
     }
 
     //abstract public function replace();
@@ -40,7 +43,7 @@ abstract class Fixer
      */
     public function save()
     {
-        file_put_contents( $this->path, $this->text );
+        file_put_contents($this->path, $this->text);
     }
 
     /**
@@ -52,5 +55,4 @@ abstract class Fixer
     {
         return $this->text;
     }
-
 }

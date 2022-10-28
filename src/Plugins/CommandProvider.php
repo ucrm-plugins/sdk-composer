@@ -1,7 +1,10 @@
-<?php /** @noinspection PhpUnused */
-declare( strict_types=1 );
+<?php
 
-namespace UCRM\Composer\Plugins;
+/** @noinspection PhpUnused */
+
+declare(strict_types=1);
+
+namespace UCRM\Plugins\SDK\Composer\Plugins;
 
 use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
 use Composer\Plugin\PluginInterface as Plugin;
@@ -29,7 +32,5 @@ class CommandProvider implements CommandProviderCapability
             new Commands\BundleCommand,
             new Commands\HookCommand,
         ];
-
     }
-
 }

@@ -1,7 +1,10 @@
-<?php /** @noinspection PhpUnused */
-declare( strict_types=1 );
+<?php
 
-namespace UCRM\Composer\Plugins\Commands;
+/** @noinspection PhpUnused */
+
+declare(strict_types=1);
+
+namespace UCRM\Plugins\SDK\Composer\Plugins\Commands;
 
 use Exception;
 use RuntimeException;
@@ -27,10 +30,13 @@ class HookCommand extends BaseCommand
      */
     protected function configure()
     {
-        $this->setName( "hook" );
+        $this->setName("hook");
 
-        $this->addArgument( "hook", InputArgument::REQUIRED,
-            "The hook to execute (install|update|configure|enable|disable|remove)" );
+        $this->addArgument(
+            "hook",
+            InputArgument::REQUIRED,
+            "The hook to execute (install|update|configure|enable|disable|remove)"
+        );
     }
 
     /**
@@ -56,17 +62,15 @@ class HookCommand extends BaseCommand
             "remove"
         ];
 
-        if( !in_array($hook, $hooks) )
+        if (!in_array($hook, $hooks))
             throw new RuntimeException("Hook: '$hook' is not supported by UCRM.");
 
-        if( !file_exists( $file ) )
+        if (!file_exists($file))
             throw new RuntimeException("File: '$file' could not be found.");
 
         $io->section("Simulating '$hook' hook...");
 
         /** @noinspection PhpIncludeInspection */
         include $file;
-
     }
-
 }
