@@ -11,8 +11,8 @@ use Composer\Plugin\PluginInterface as Plugin;
 use Composer\Command\BaseCommand as Command;
 
 /**
- * @copyright 2019 Spaeth Technologies, Inc.
- * @author    Ryan Spaeth (rspaeth@mvqn.net)
+ * @copyright 2019 Spaeth Technologies Inc.
+ * @author    Ryan Spaeth (rspaeth@spaethtech.com)
  *
  * Class CommandProvider
  *

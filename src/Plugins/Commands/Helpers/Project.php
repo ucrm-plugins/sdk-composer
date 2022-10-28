@@ -11,8 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * @copyright 2019 Spaeth Technologies, Inc.
- * @author    Ryan Spaeth (rspaeth@mvqn.net)
+ * @copyright 2019 Spaeth Technologies Inc.
+ * @author    Ryan Spaeth (rspaeth@spaethtech.com)
  *
  * Class Project
  *

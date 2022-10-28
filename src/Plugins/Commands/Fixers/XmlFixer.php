@@ -10,8 +10,8 @@ use Exception;
 use SimpleXMLElement;
 
 /**
- * @copyright 2019 Spaeth Technologies, Inc.
- * @author    Ryan Spaeth (rspaeth@mvqn.net)
+ * @copyright 2019 Spaeth Technologies Inc.
+ * @author    Ryan Spaeth (rspaeth@spaethtech.com)
  *
  * Class XmlFixer
  *

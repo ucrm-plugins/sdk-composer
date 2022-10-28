@@ -9,8 +9,8 @@ namespace UCRM\Plugins\SDK\Composer\Plugins\Commands\Fixers;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 /**
- * @copyright 2019 Spaeth Technologies, Inc.
- * @author    Ryan Spaeth (rspaeth@mvqn.net)
+ * @copyright 2019 Spaeth Technologies Inc.
+ * @author    Ryan Spaeth (rspaeth@spaethtech.com)
  *
  * Class Fixer
  *

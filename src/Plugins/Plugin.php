@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-namespace UCRM\Plugins\SDK\Composer\Plugins;
+namespace UCRM\SDK\Composer;
 
 use Composer\Composer;
 use Composer\EventDispatcher\EventSubscriberInterface;
@@ -16,8 +16,8 @@ use Composer\Script\Event;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @copyright 2019 Spaeth Technologies, Inc.
- * @author    Ryan Spaeth (rspaeth@mvqn.net)
+ * @copyright 2019 Spaeth Technologies Inc.
+ * @author    Ryan Spaeth (rspaeth@spaethtech.com)
  *
  * Class Bundle
  *
@@ -32,7 +32,8 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
     /** @var IOInterface */
     protected $io;
 
-    #region PluginInterface
+
+
 
     /**
      *
@@ -71,9 +72,9 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         // TODO: Implement uninstall() method.
     }
 
-    #endregion
 
-    #region Capable
+
+
 
     /**
      *
@@ -87,9 +88,9 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         ];
     }
 
-    #endregion
 
-    #region EventSubscriberInterface
+
+
 
     /**
      *
@@ -104,7 +105,7 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         ];
     }
 
-    #endregion
+
 
     /**
      * Handles the 'post-create-project-cmd' event.
@@ -115,7 +116,7 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
     {
         $fs = new Filesystem();
 
-        #region .idea/*
+
 
         chdir(__PROJECT_DIR__ . "/.idea/");
 
@@ -135,9 +136,9 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
             }
         }
 
-        #endregion
 
-        #region dev/public.php
+
+
 
         chdir(__PROJECT_DIR__ . "/dev/");
 
@@ -147,9 +148,9 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 
         $event->getIO()->write("<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "public.php'</info>");
 
-        #endregion
 
-        #region src/manifest.json
+
+
 
         chdir(__PROJECT_DIR__ . "/src/");
 
@@ -161,9 +162,9 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 
         $event->getIO()->write("<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "manifest.json'</info>");
 
-        #endregion
 
-        #region composer.json
+
+
 
         chdir(__PROJECT_DIR__);
 
@@ -173,15 +174,12 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 
         $event->getIO()->write("<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "composer.json'</info>");
 
-        #endregion
 
-        #region .git/
+
+
 
         chdir(__PROJECT_DIR__);
 
         echo exec("git init");
-
-        #endregion
-
     }
 }

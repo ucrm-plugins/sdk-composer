@@ -7,7 +7,7 @@
         "plugins",
         "composer"
     ],
-    "description": "A collection of composer plugins and scripts for UCRM Plugin development.",
+    "description": "A collection of Composer plugins and scripts for UCRM Plugin development.",
     "homepage": "https://github.com/ucrm-plugins/sdk-composer",
     "license": "MIT",
     "type": "composer-plugin",
@@ -26,10 +26,10 @@
     },
     "autoload": {
         "psr-4": {
-            "UCRM\\Plugins\\SDK\\Composer\\": "src/"
+            "UCRM\\SDK\\Composer\\": "src/"
         }
     },
     "extra": {
-        "class": "UCRM\\Plugins\\SDK\\Composer\\Plugins\\Plugin"
+        "class": "UCRM\\SDK\\Composer\\Plugins\\Plugin"
     }
 }

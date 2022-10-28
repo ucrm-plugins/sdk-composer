@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 /**
- * @copyright   2019 Spaeth Technologies, Inc.
- * @author      Ryan Spaeth (rspaeth@mvqn.net)
+ * @copyright   2019 Spaeth Technologies Inc.
+ * @author      Ryan Spaeth (rspaeth@spaethtech.com)
  *
  * defines.php
  *
@@ -69,4 +69,3 @@ if( !defined( "__PLUGIN_NAME__" ) )
     );
 
 #endregion
-

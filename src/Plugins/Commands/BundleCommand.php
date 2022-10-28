@@ -15,8 +15,8 @@ use Symfony\Component\Filesystem\Filesystem;
 use UCRM\Composer\Plugins\Commands\Helpers\Project;
 
 /**
- * @copyright 2019 Spaeth Technologies, Inc.
- * @author    Ryan Spaeth (rspaeth@mvqn.net)
+ * @copyright 2019 Spaeth Technologies Inc.
+ * @author    Ryan Spaeth (rspaeth@spaethtech.com)
  *
  * Class BundleCommand
  *
