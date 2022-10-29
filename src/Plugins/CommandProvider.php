@@ -38,6 +38,8 @@ class CommandProvider implements CommandProviderCapability
 
         $hooks = glob("$cwd/hook_*.php");
 
+        var_dump($hooks);
+
         if ($hooks || count($hooks) > 0) {
             $commands[] = new HookCommand;
         }
