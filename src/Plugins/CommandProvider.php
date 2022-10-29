@@ -29,6 +29,7 @@ class CommandProvider implements CommandProviderCapability
         $commands = [];
 
         $cwd = getcwd();
+        echo ">>> $cwd\n";
 
         if (file_exists("$cwd/manifest.json"))
             $commands[] = new Commands\BundleCommand();
