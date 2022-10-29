@@ -7,6 +7,8 @@ namespace UCRM\SDK\Composer\Plugins;
 use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
 use Composer\Plugin\PluginInterface as Plugin;
 use Composer\Command\BaseCommand as Command;
+use UCRM\SDK\Composer\Plugins\Commands\BundleCommand;
+use UCRM\SDK\Composer\Plugins\Commands\HookCommand;
 
 /**
  * @copyright 2019 Spaeth Technologies Inc.
@@ -32,8 +34,13 @@ class CommandProvider implements CommandProviderCapability
         echo ">>> $cwd\n";
 
         if (file_exists("$cwd/manifest.json"))
-            $commands[] = new Commands\BundleCommand();
+            $commands[] = new BundleCommand;
 
+        $hooks = glob("$cwd/hook_*.php");
+
+        if ($hooks || count($hooks) > 0) {
+            $commands[] = new HookCommand;
+        }
 
         //if (file_exists("$cwd/manifest.json"))
         //    $commands[] = new Commands\BundleCommand();
