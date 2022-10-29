@@ -54,7 +54,7 @@ class HookCommand extends BaseCommand
         $io = new SymfonyStyle($input, $output);
 
         $hook = $input->getArgument("hook");
-        $file = PLUGIN_DIR . DIRECTORY_SEPARATOR . "hook_$hook.php";
+
         $hooks = [
             "install",
             "update",
@@ -67,12 +67,13 @@ class HookCommand extends BaseCommand
         if (!in_array($hook, $hooks))
             throw new RuntimeException("Hook: '$hook' is not supported by UCRM.");
 
+        $file = getcwd() . "/hook_$hook.php";
+
         if (!file_exists($file))
             throw new RuntimeException("File: '$file' could not be found.");
 
         $io->section("Simulating '$hook' hook...");
 
-        /** @noinspection PhpIncludeInspection */
         include $file;
     }
 }
