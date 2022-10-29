@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace UCRM\SDK\Composer;
+namespace UCRM\SDK\Composer\Plugins;
 
 use Composer\Composer;
 use Composer\EventDispatcher\EventSubscriberInterface;

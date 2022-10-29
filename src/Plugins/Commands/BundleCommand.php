@@ -52,6 +52,12 @@ class BundleCommand extends BaseCommand
 
 
 
+
+
+            
+        exit;
+
+
         chdir(PROJECT_DIR);
 
         $manifest = json_decode(file_get_contents("src/manifest.json"), true);

@@ -59,9 +59,10 @@ class Project
         $manifest = json_decode(file_get_contents(PLUGIN_DIR . "/manifest.json"), true);
 
         if (($error = json_last_error()) !== JSON_ERROR_NONE) {
+            $msg = json_last_error_msg();
             $io->error([
                 "An error occurred while parsing the Plugin's 'manifest.json' file.",
-                "Error: $error"
+                "Error: $msg"
             ]);
             return false;
         }
