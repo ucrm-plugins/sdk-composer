@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection PhpUnused, HtmlUnknownTag  */
-
 declare(strict_types=1);
 
 namespace UCRM\SDK\Composer;
@@ -32,9 +30,6 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
     /** @var IOInterface */
     protected $io;
 
-
-
-
     /**
      *
      *
@@ -47,7 +42,7 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         $this->io = $io;
 
         /** @noinspection PhpIncludeInspection */
-        require_once realpath(__DIR__ . "/../../defines.php");
+        //require_once realpath(__DIR__ . "/../../defines.php");
     }
 
     /**
@@ -72,10 +67,6 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         // TODO: Implement uninstall() method.
     }
 
-
-
-
-
     /**
      *
      *
@@ -88,10 +79,6 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         ];
     }
 
-
-
-
-
     /**
      *
      *
@@ -99,13 +86,10 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
      */
     public static function getSubscribedEvents(): array
     {
-
         return [
             "post-create-project-cmd" => "postCreateProjectCommand",
         ];
     }
-
-
 
     /**
      * Handles the 'post-create-project-cmd' event.
@@ -114,72 +98,54 @@ final class Plugin implements PluginInterface, Capable, EventSubscriberInterface
      */
     public function postCreateProjectCommand(Event $event)
     {
-        $fs = new Filesystem();
+        // $fs = new Filesystem();
 
+        // chdir(__PROJECT_DIR__ . "/.idea/");
 
+        // foreach (scandir(getcwd()) as $file) {
+        //     if ($file === "." || $file === ".." || is_dir($file))
+        //         continue;
 
-        chdir(__PROJECT_DIR__ . "/.idea/");
+        //     $contents = file_get_contents($file);
+        //     $contents = preg_replace("/skeleton/m", __PROJECT_NAME__, $contents);
+        //     file_put_contents($file, $contents);
 
-        foreach (scandir(getcwd()) as $file) {
-            if ($file === "." || $file === ".." || is_dir($file))
-                continue;
+        //     $event->getIO()->write("<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "$file'</info>");
 
-            $contents = file_get_contents($file);
-            $contents = preg_replace("/skeleton/m", __PROJECT_NAME__, $contents);
-            file_put_contents($file, $contents);
+        //     if (preg_match("/^skeleton(.*)$/", $file, $matches) === 1 && count($matches) === 2) {
+        //         $fs->rename($file, __PROJECT_NAME__ . $matches[1]);
+        //         $event->getIO()->write("<info>Renamed file: '" . getcwd() . DIRECTORY_SEPARATOR . "$file'</info>");
+        //     }
+        // }
 
-            $event->getIO()->write("<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "$file'</info>");
+        // chdir(__PROJECT_DIR__ . "/dev/");
 
-            if (preg_match("/^skeleton(.*)$/", $file, $matches) === 1 && count($matches) === 2) {
-                $fs->rename($file, __PROJECT_NAME__ . $matches[1]);
-                $event->getIO()->write("<info>Renamed file: '" . getcwd() . DIRECTORY_SEPARATOR . "$file'</info>");
-            }
-        }
+        // $contents = file_get_contents("public.php");
+        // $contents = preg_replace("/skeleton/m", __PROJECT_NAME__, $contents);
+        // file_put_contents("public.php", $contents);
 
+        // $event->getIO()->write("<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "public.php'</info>");
 
+        // chdir(__PROJECT_DIR__ . "/src/");
 
+        // $contents = file_get_contents("manifest.json");
+        // $contents = preg_replace("/skeleton/m", __PROJECT_NAME__, $contents);
+        // $contents = preg_replace("/Skeleton/m", ucfirst(__PROJECT_NAME__), $contents);
 
+        // file_put_contents("manifest.json", $contents);
 
-        chdir(__PROJECT_DIR__ . "/dev/");
+        // $event->getIO()->write("<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "manifest.json'</info>");
 
-        $contents = file_get_contents("public.php");
-        $contents = preg_replace("/skeleton/m", __PROJECT_NAME__, $contents);
-        file_put_contents("public.php", $contents);
+        // chdir(__PROJECT_DIR__);
 
-        $event->getIO()->write("<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "public.php'</info>");
+        // $contents = file_get_contents("composer.json");
+        // $contents = preg_replace("/skeleton/m", __PROJECT_NAME__, $contents);
+        // file_put_contents("composer.json", $contents);
 
+        // $event->getIO()->write("<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "composer.json'</info>");
 
+        // chdir(__PROJECT_DIR__);
 
-
-
-        chdir(__PROJECT_DIR__ . "/src/");
-
-        $contents = file_get_contents("manifest.json");
-        $contents = preg_replace("/skeleton/m", __PROJECT_NAME__, $contents);
-        $contents = preg_replace("/Skeleton/m", ucfirst(__PROJECT_NAME__), $contents);
-
-        file_put_contents("manifest.json", $contents);
-
-        $event->getIO()->write("<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "manifest.json'</info>");
-
-
-
-
-
-        chdir(__PROJECT_DIR__);
-
-        $contents = file_get_contents("composer.json");
-        $contents = preg_replace("/skeleton/m", __PROJECT_NAME__, $contents);
-        file_put_contents("composer.json", $contents);
-
-        $event->getIO()->write("<info>Updated file: '" . getcwd() . DIRECTORY_SEPARATOR . "composer.json'</info>");
-
-
-
-
-
-        chdir(__PROJECT_DIR__);
-
-        echo exec("git init");
+        // echo exec("git init");
     }
 }

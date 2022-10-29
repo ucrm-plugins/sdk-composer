@@ -1,10 +1,8 @@
 <?php
 
-/** @noinspection PhpUnused */
-
 declare(strict_types=1);
 
-namespace UCRM\Plugins\SDK\Composer\Plugins\Commands;
+namespace UCRM\SDK\Composer\Plugins\Commands;
 
 use Exception;
 use RuntimeException;
@@ -51,8 +49,8 @@ class HookCommand extends BaseCommand
     {
         $io = new SymfonyStyle($input, $output);
 
-        $hook  = $input->getArgument("hook");
-        $file  = __PLUGIN_DIR__ . DIRECTORY_SEPARATOR . "hook_$hook.php";
+        $hook = $input->getArgument("hook");
+        $file = PLUGIN_DIR . DIRECTORY_SEPARATOR . "hook_$hook.php";
         $hooks = [
             "install",
             "update",

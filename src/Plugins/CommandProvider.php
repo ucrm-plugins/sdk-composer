@@ -1,10 +1,8 @@
 <?php
 
-/** @noinspection PhpUnused */
-
 declare(strict_types=1);
 
-namespace UCRM\Plugins\SDK\Composer\Plugins;
+namespace UCRM\SDK\Composer\Plugins;
 
 use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
 use Composer\Plugin\PluginInterface as Plugin;

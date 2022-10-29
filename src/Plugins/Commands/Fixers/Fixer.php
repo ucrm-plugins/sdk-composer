@@ -1,16 +1,14 @@
 <?php
 
-/** @noinspection PhpUnused */
-
 declare(strict_types=1);
 
-namespace UCRM\Plugins\SDK\Composer\Plugins\Commands\Fixers;
+namespace UCRM\SDK\Composer\Plugins\Commands\Fixers;
 
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 /**
  * @copyright 2019 Spaeth Technologies Inc.
- * @author    Ryan Spaeth (rspaeth@spaethtech.com)
+ * @author Ryan Spaeth (rspaeth@spaethtech.com)
  *
  * Class Fixer
  *

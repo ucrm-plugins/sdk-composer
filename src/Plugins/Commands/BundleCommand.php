@@ -1,10 +1,8 @@
 <?php
 
-/** @noinspection PhpUnused */
-
 declare(strict_types=1);
 
-namespace UCRM\Plugins\SDK\Composer\Plugins\Commands;
+namespace UCRM\SDK\Composer\Plugins\Commands;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -12,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
-use UCRM\Composer\Plugins\Commands\Helpers\Project;
+use UCRM\SDK\Composer\Plugins\Commands\Helpers\Project;
 
 /**
  * @copyright 2019 Spaeth Technologies Inc.
@@ -54,7 +52,7 @@ class BundleCommand extends BaseCommand
 
 
 
-        chdir(__PROJECT_DIR__);
+        chdir(PROJECT_DIR);
 
         $manifest = json_decode(file_get_contents("src/manifest.json"), true);
 
@@ -97,7 +95,7 @@ class BundleCommand extends BaseCommand
 
         $file = $input->getOption("file")
             ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["file"]
-            ?? __PLUGIN_NAME__;
+            ?? PLUGIN_NAME;
 
         $rows[] = ["file", $file, ""];
 
@@ -133,7 +131,7 @@ class BundleCommand extends BaseCommand
 
         $dir = $input->getOption("dir")
             ?? $this->getComposer()->getPackage()->getExtra()["bundle"]["dir"]
-            ?? __PROJECT_DIR__ . "/zip/";
+            ?? PROJECT_DIR . "/zip/";
 
         $abs = Project::isAbsolutePath($dir) ? $dir : getcwd() . "/$dir";
 
@@ -150,8 +148,8 @@ class BundleCommand extends BaseCommand
 
         if ($noDev) {
             /*
-            if( !file_exists( __PROJECT_DIR__ . "/tmp/" ) )
-                mkdir( __PROJECT_DIR__ . "/tmp/", 0777, true );
+            if( !file_exists( PROJECT_DIR . "/tmp/" ) )
+                mkdir( PROJECT_DIR . "/tmp/", 0777, true );
 
             $io->block( "Creating 'vendor' backup...", null, "fg=green", "" );
             $fs->remove( "tmp/vendor_bak" );

@@ -1,10 +1,8 @@
 <?php
 
-/** @noinspection PhpUnused */
-
 declare(strict_types=1);
 
-namespace UCRM\Plugins\SDK\Composer\Plugins\Commands\Fixers;
+namespace UCRM\SDK\Composer\Plugins\Commands\Fixers;
 
 use Exception;
 use SimpleXMLElement;

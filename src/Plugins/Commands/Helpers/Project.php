@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace UCRM\Plugins\SDK\Composer\Plugins\Commands\Helpers;
+namespace UCRM\SDK\Composer\Plugins\Commands\Helpers;
 
 use Deployment;
 use JsonSchema\Validator;
@@ -33,30 +33,30 @@ class Project
     {
         $io = new SymfonyStyle($input, $output);
 
-        if (__DEPLOYMENT__ === Deployment::REMOTE) {
+        if (DEPLOYMENT === Deployment::REMOTE) {
             $io->error([
                 "The 'bundle' command cannot be used on a remotely deployed project."
             ]);
             return false;
         }
 
-        if (!file_exists(__PROJECT_DIR__ . "/src") || !is_dir(__PROJECT_DIR__ . "/src")) {
+        if (!file_exists(PROJECT_DIR . "/src") || !is_dir(PROJECT_DIR . "/src")) {
             $io->error([
-                "The Plugin's code is expected to reside at: '" . __PROJECT_DIR__ . DIRECTORY_SEPARATOR . "src'.",
+                "The Plugin's code is expected to reside at: '" . PROJECT_DIR . DIRECTORY_SEPARATOR . "src'.",
                 "See: https://gitlab.com/ucrm-plugins/skeleton"
             ]);
             return false;
         }
 
-        if (!file_exists(__PLUGIN_DIR__ . "/manifest.json") || !file_exists(__PLUGIN_DIR__ . "/main.php")) {
+        if (!file_exists(PLUGIN_DIR . "/manifest.json") || !file_exists(PLUGIN_DIR . "/main.php")) {
             $io->error([
-                "The Plugin at: '" . __PLUGIN_DIR__ . "' does not contain the required files.",
+                "The Plugin at: '" . PLUGIN_DIR . "' does not contain the required files.",
                 "See: https://github.com/Ubiquiti-App/UCRM-plugins/blob/master/docs/file-structure.md#required-files",
             ]);
             return false;
         }
 
-        $manifest = json_decode(file_get_contents(__PLUGIN_DIR__ . "/manifest.json"), true);
+        $manifest = json_decode(file_get_contents(PLUGIN_DIR . "/manifest.json"), true);
 
         if (($error = json_last_error()) !== JSON_ERROR_NONE) {
             $io->error([
@@ -67,8 +67,8 @@ class Project
         }
 
         $validator = new Validator();
-        $validator->validate($manifest, (object)[
-            '$ref' => (object)json_decode(file_get_contents(__DIR__ . "/../../../../manifest.schema.json"), true)
+        $validator->validate($manifest, (object) [
+            '$ref' => (object) json_decode(file_get_contents(__DIR__ . "/../../../../manifest.schema.json"), true)
         ]);
 
         if (!$validator->isValid()) {
@@ -105,11 +105,11 @@ class Project
      *
      * @param string $path              An optional file on which to operate, defaults to the Project's 'composer.json'.
      */
-    public static function fixSubFolders(string $path = __PROJECT_DIR__ . "/src/composer.json")
+    public static function fixSubFolders(string $path = PROJECT_DIR . "/src/composer.json")
     {
         $folders = [];
 
-        foreach (scandir(__PROJECT_DIR__) as $file)
+        foreach (scandir(PROJECT_DIR) as $file)
             if ($file !== "." && $file !== ".." && is_dir($file) && $file !== "src")
                 $folders[] = $file;
 

@@ -24,6 +24,9 @@
         "composer-plugin-api": "^2",
         "composer/composer": "^2"
     },
+    "require-dev": {
+        "franzl/studio": "^0.16.0"
+    },
     "autoload": {
         "psr-4": {
             "UCRM\\SDK\\Composer\\": "src/"
@@ -31,5 +34,10 @@
     },
     "extra": {
         "class": "UCRM\\SDK\\Composer\\Plugins\\Plugin"
+    },
+    "config": {
+        "allow-plugins": {
+            "franzl/studio": true
+        }
     }
 }
