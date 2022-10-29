@@ -28,8 +28,9 @@ class HookCommand extends BaseCommand
      */
     protected function configure()
     {
+
         $this->setName("hook");
-        $this->setDescription("Testing");
+        $this->setDescription("Executes the specified UCRM Plugin Hook");
 
         $this->addArgument(
             "hook",

@@ -29,6 +29,7 @@ class BundleCommand extends BaseCommand
     protected function configure()
     {
         $this->setName("bundle");
+        $this->setDescription("Bundles the UCRM Plugin");
 
         $this->addOption("no-dev", null, InputOption::VALUE_NONE,     "Bundle without development dependencies.");
         $this->addOption("file",   null, InputOption::VALUE_REQUIRED, "Bundle using file name.");
@@ -54,7 +55,7 @@ class BundleCommand extends BaseCommand
 
 
 
-            
+
         exit;
 
 
