@@ -26,9 +26,21 @@ class CommandProvider implements CommandProviderCapability
      */
     public function getCommands(): array
     {
-        return [
-            new Commands\BundleCommand,
-            new Commands\HookCommand,
-        ];
+        $commands = [];
+
+        $cwd = getcwd();
+
+        if (file_exists("$cwd/manifest.json"))
+            $commands[] = new Commands\BundleCommand();
+
+
+        //if (file_exists("$cwd/manifest.json"))
+        //    $commands[] = new Commands\BundleCommand();
+
+        return $commands;
+        // return [
+        //     new Commands\BundleCommand,
+        //     new Commands\HookCommand,
+        // ];
     }
 }
