@@ -29,7 +29,7 @@ class HookCommand extends BaseCommand
     protected function configure()
     {
         $this->setName("hook");
-        $this->description = "Testing";
+        $this->setDescription("Testing");
 
         $this->addArgument(
             "hook",
@@ -37,6 +37,8 @@ class HookCommand extends BaseCommand
             "The hook to execute (install|update|configure|enable|disable|remove)"
         );
     }
+
+
 
     /**
      * Executes when this command is used.
