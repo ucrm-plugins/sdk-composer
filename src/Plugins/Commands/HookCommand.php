@@ -75,5 +75,7 @@ class HookCommand extends BaseCommand
         $io->section("Simulating '$hook' hook...");
 
         include $file;
+
+        return self::SUCCESS;
     }
 }
