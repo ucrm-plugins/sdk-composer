@@ -31,17 +31,16 @@ class CommandProvider implements CommandProviderCapability
         $commands = [];
 
         $cwd = getcwd();
-        echo ">>> $cwd\n";
 
         if (file_exists("$cwd/manifest.json"))
             $commands[] = new BundleCommand;
 
         $hooks = glob("$cwd/hook_*.php");
 
-        var_dump($hooks);
+        if ($hooks !== false && count($hooks) > 0) {
+            $command = new HookCommand();
 
-        if ($hooks || count($hooks) > 0) {
-            $commands[] = new HookCommand;
+            $commands[] = $command;
         }
 
         //if (file_exists("$cwd/manifest.json"))
